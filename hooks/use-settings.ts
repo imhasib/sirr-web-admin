@@ -1,0 +1,59 @@
+'use client';
+
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { settingsService } from '@/services/settings.service';
+import { UpdateSettingRequest } from '@/types';
+import { toast } from 'sonner';
+
+// Query keys factory
+export const settingsKeys = {
+  all: ['settings'] as const,
+  lists: () => [...settingsKeys.all, 'list'] as const,
+  detail: (key: string) => [...settingsKeys.all, 'detail', key] as const,
+  promptSchemas: () => [...settingsKeys.all, 'prompt-schemas'] as const,
+};
+
+// Get all settings
+export function useSettings() {
+  return useQuery({
+    queryKey: settingsKeys.lists(),
+    queryFn: () => settingsService.getSettings(),
+  });
+}
+
+// Get single setting by key
+export function useSetting(key: string) {
+  return useQuery({
+    queryKey: settingsKeys.detail(key),
+    queryFn: () => settingsService.getSetting(key),
+    enabled: !!key,
+  });
+}
+
+// Update setting mutation
+export function useUpdateSetting() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ key, data }: { key: string; data: UpdateSettingRequest }) =>
+      settingsService.updateSetting(key, data),
+    onSuccess: (updatedSetting) => {
+      // Invalidate and refetch settings list
+      queryClient.invalidateQueries({ queryKey: settingsKeys.lists() });
+      // Update the specific setting in cache
+      queryClient.setQueryData(settingsKeys.detail(updatedSetting.key), updatedSetting);
+      toast.success('Setting updated successfully');
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to update setting');
+    },
+  });
+}
+
+// Get prompt output schemas
+export function usePromptSchemas() {
+  return useQuery({
+    queryKey: settingsKeys.promptSchemas(),
+    queryFn: () => settingsService.getPromptSchemas(),
+  });
+}

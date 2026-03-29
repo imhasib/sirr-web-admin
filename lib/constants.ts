@@ -12,6 +12,7 @@ export const ROUTES = {
   RESET_PASSWORD: '/reset-password',
   DASHBOARD: '/dashboard',
   SETTINGS: '/settings',
+  PROMPT_SETTINGS: '/settings/prompts',
 } as const;
 
 export const PUBLIC_ROUTES = [
