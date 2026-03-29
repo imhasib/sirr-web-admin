@@ -13,6 +13,13 @@ export const ROUTES = {
   DASHBOARD: '/dashboard',
   SETTINGS: '/settings',
   PROMPT_SETTINGS: '/settings/prompts',
+  // Admin routes
+  ADMIN_LIBRARIES: '/admin/libraries',
+  ADMIN_LIBRARIES_NEW: '/admin/libraries/new',
+  ADMIN_THERAPISTS: '/admin/therapists',
+  ADMIN_THERAPISTS_NEW: '/admin/therapists/new',
+  ADMIN_ONBOARDING: '/admin/onboarding',
+  ADMIN_ONBOARDING_NEW: '/admin/onboarding/new',
 } as const;
 
 export const PUBLIC_ROUTES = [

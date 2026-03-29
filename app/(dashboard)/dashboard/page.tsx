@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { AlertCircle, MessageSquareText, ChevronRight } from 'lucide-react';
+import { AlertCircle, MessageSquareText, ChevronRight, BookOpen, Users, ClipboardList } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useAuthStore } from '@/stores/auth-store';
@@ -46,21 +46,71 @@ export default function DashboardPage() {
         </Card>
 
         {isAdmin && (
-          <Card
-            className="hover:shadow-md transition-shadow cursor-pointer group"
-            onClick={() => router.push(ROUTES.PROMPT_SETTINGS)}
-          >
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="p-2 rounded-lg bg-muted text-muted-foreground">
-                  <MessageSquareText className="h-5 w-5" />
+          <>
+            <Card
+              className="hover:shadow-md transition-shadow cursor-pointer group"
+              onClick={() => router.push(ROUTES.ADMIN_LIBRARIES)}
+            >
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="p-2 rounded-lg bg-muted text-muted-foreground">
+                    <BookOpen className="h-5 w-5" />
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
                 </div>
-                <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
-              </div>
-              <CardTitle>Prompt Settings</CardTitle>
-              <CardDescription>Manage AI prompts and output schemas</CardDescription>
-            </CardHeader>
-          </Card>
+                <CardTitle>Library Management</CardTitle>
+                <CardDescription>Manage library resources and content</CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card
+              className="hover:shadow-md transition-shadow cursor-pointer group"
+              onClick={() => router.push(ROUTES.ADMIN_THERAPISTS)}
+            >
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="p-2 rounded-lg bg-muted text-muted-foreground">
+                    <Users className="h-5 w-5" />
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                </div>
+                <CardTitle>Therapist Management</CardTitle>
+                <CardDescription>Manage therapist profiles and information</CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card
+              className="hover:shadow-md transition-shadow cursor-pointer group"
+              onClick={() => router.push(ROUTES.ADMIN_ONBOARDING)}
+            >
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="p-2 rounded-lg bg-muted text-muted-foreground">
+                    <ClipboardList className="h-5 w-5" />
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                </div>
+                <CardTitle>Onboarding Questions</CardTitle>
+                <CardDescription>Manage user onboarding flow</CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card
+              className="hover:shadow-md transition-shadow cursor-pointer group"
+              onClick={() => router.push(ROUTES.PROMPT_SETTINGS)}
+            >
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="p-2 rounded-lg bg-muted text-muted-foreground">
+                    <MessageSquareText className="h-5 w-5" />
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                </div>
+                <CardTitle>Prompt Settings</CardTitle>
+                <CardDescription>Manage AI prompts and output schemas</CardDescription>
+              </CardHeader>
+            </Card>
+          </>
         )}
 
         <Card>
