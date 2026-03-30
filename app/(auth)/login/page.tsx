@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -38,8 +39,12 @@ export default function LoginPage() {
   };
 
   return (
-    <Card>
-      <CardHeader className="space-y-1">
+    <>
+      <Link href={ROUTES.DASHBOARD} className="flex items-center justify-center mb-6 hover:opacity-80 transition-opacity">
+        <Image src="/sirr-logo.png" alt="Sirr Logo" width={120} height={60} className="object-contain dark:invert" />
+      </Link>
+      <Card>
+        <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
         <CardDescription>Enter your credentials to sign in to your account</CardDescription>
       </CardHeader>
@@ -86,7 +91,8 @@ export default function LoginPage() {
             Sign up
           </Link>
         </p>
-      </CardFooter>
-    </Card>
+        </CardFooter>
+      </Card>
+    </>
   );
 }
