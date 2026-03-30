@@ -20,6 +20,7 @@ export const ROUTES = {
   ADMIN_THERAPISTS_NEW: '/admin/therapists/new',
   ADMIN_ONBOARDING: '/admin/onboarding',
   ADMIN_ONBOARDING_NEW: '/admin/onboarding/new',
+  ADMIN_AI_REFLECTION_TEST: '/admin/ai-reflection-test',
 } as const;
 
 export const PUBLIC_ROUTES = [

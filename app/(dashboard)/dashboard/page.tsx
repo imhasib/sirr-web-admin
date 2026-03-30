@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { AlertCircle, MessageSquareText, ChevronRight, BookOpen, Users, ClipboardList } from 'lucide-react';
+import { AlertCircle, MessageSquareText, ChevronRight, BookOpen, Users, ClipboardList, Sparkles } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useAuthStore } from '@/stores/auth-store';
@@ -108,6 +108,22 @@ export default function DashboardPage() {
                 </div>
                 <CardTitle>Prompt Settings</CardTitle>
                 <CardDescription>Manage AI prompts and output schemas</CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card
+              className="hover:shadow-md transition-shadow cursor-pointer group"
+              onClick={() => router.push(ROUTES.ADMIN_AI_REFLECTION_TEST)}
+            >
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="p-2 rounded-lg bg-muted text-muted-foreground">
+                    <Sparkles className="h-5 w-5" />
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                </div>
+                <CardTitle>AI Reflection Test</CardTitle>
+                <CardDescription>Test AI reflection generation with prompts</CardDescription>
               </CardHeader>
             </Card>
           </>
