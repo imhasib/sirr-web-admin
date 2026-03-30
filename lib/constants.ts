@@ -1,38 +1,40 @@
 export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
-export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'SIRR Admin';
 
 export const AUTH_TOKEN_KEY = 'sirr_access_token';
 export const REFRESH_TOKEN_KEY = 'sirr_refresh_token';
 
+// Get basePath from environment (e.g., '/sirr' or empty string)
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 export const ROUTES = {
   // Public routes
-  HOME: '/',
-  LOGIN: '/login',
-  REGISTER: '/register',
-  FORGOT_PASSWORD: '/forgot-password',
-  RESET_PASSWORD: '/reset-password',
+  HOME: `${BASE_PATH}/`,
+  LOGIN: `${BASE_PATH}/login`,
+  REGISTER: `${BASE_PATH}/register`,
+  FORGOT_PASSWORD: `${BASE_PATH}/forgot-password`,
+  RESET_PASSWORD: `${BASE_PATH}/reset-password`,
 
   // Protected routes
-  DASHBOARD: '/dashboard',
-  SETTINGS: '/settings',
-  PROMPT_SETTINGS: '/settings/prompts',
-  PROFILE_SETTINGS: '/settings/profile',
-  PASSWORD_SETTINGS: '/settings/password',
+  DASHBOARD: `${BASE_PATH}/dashboard`,
+  SETTINGS: `${BASE_PATH}/settings`,
+  PROMPT_SETTINGS: `${BASE_PATH}/settings/prompts`,
+  PROFILE_SETTINGS: `${BASE_PATH}/settings/profile`,
+  PASSWORD_SETTINGS: `${BASE_PATH}/settings/password`,
 
   // Admin - Libraries
-  ADMIN_LIBRARIES: '/admin/libraries',
-  ADMIN_LIBRARIES_NEW: '/admin/libraries/new',
+  ADMIN_LIBRARIES: `${BASE_PATH}/admin/libraries`,
+  ADMIN_LIBRARIES_NEW: `${BASE_PATH}/admin/libraries/new`,
 
   // Admin - Therapists
-  ADMIN_THERAPISTS: '/admin/therapists',
-  ADMIN_THERAPISTS_NEW: '/admin/therapists/new',
+  ADMIN_THERAPISTS: `${BASE_PATH}/admin/therapists`,
+  ADMIN_THERAPISTS_NEW: `${BASE_PATH}/admin/therapists/new`,
 
   // Admin - Onboarding
-  ADMIN_ONBOARDING: '/admin/onboarding',
-  ADMIN_ONBOARDING_NEW: '/admin/onboarding/new',
+  ADMIN_ONBOARDING: `${BASE_PATH}/admin/onboarding`,
+  ADMIN_ONBOARDING_NEW: `${BASE_PATH}/admin/onboarding/new`,
 
   // Admin - Other
-  ADMIN_AI_REFLECTION_TEST: '/admin/ai-reflection-test',
+  ADMIN_AI_REFLECTION_TEST: `${BASE_PATH}/admin/ai-reflection-test`,
 } as const;
 
 /**
@@ -41,16 +43,16 @@ export const ROUTES = {
  */
 export const DYNAMIC_ROUTES = {
   // Library routes
-  adminLibraryDetail: (id: string) => `/admin/libraries/${id}`,
-  adminLibraryEdit: (id: string) => `/admin/libraries/${id}/edit`,
+  adminLibraryDetail: (id: string) => `${BASE_PATH}/admin/libraries/${id}`,
+  adminLibraryEdit: (id: string) => `${BASE_PATH}/admin/libraries/${id}/edit`,
 
   // Therapist routes
-  adminTherapistDetail: (id: string) => `/admin/therapists/${id}`,
-  adminTherapistEdit: (id: string) => `/admin/therapists/${id}/edit`,
+  adminTherapistDetail: (id: string) => `${BASE_PATH}/admin/therapists/${id}`,
+  adminTherapistEdit: (id: string) => `${BASE_PATH}/admin/therapists/${id}/edit`,
 
   // Onboarding routes
-  adminOnboardingDetail: (slug: string) => `/admin/onboarding/${slug}`,
-  adminOnboardingEdit: (slug: string) => `/admin/onboarding/${slug}/edit`,
+  adminOnboardingDetail: (slug: string) => `${BASE_PATH}/admin/onboarding/${slug}`,
+  adminOnboardingEdit: (slug: string) => `${BASE_PATH}/admin/onboarding/${slug}/edit`,
 } as const;
 
 export const PUBLIC_ROUTES = [
@@ -58,6 +60,15 @@ export const PUBLIC_ROUTES = [
   ROUTES.REGISTER,
   ROUTES.FORGOT_PASSWORD,
   ROUTES.RESET_PASSWORD,
+];
+
+// Public routes WITHOUT basePath - for middleware use only
+// (Next.js middleware receives pathnames with basePath stripped)
+export const PUBLIC_ROUTES_NO_BASE_PATH = [
+  '/login',
+  '/register',
+  '/forgot-password',
+  '/reset-password',
 ];
 
 export const USER_ROLES = {

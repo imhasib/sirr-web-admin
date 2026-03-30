@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { AUTH_TOKEN_KEY, PUBLIC_ROUTES, ROUTES } from '@/lib/constants';
+import { AUTH_TOKEN_KEY, PUBLIC_ROUTES_NO_BASE_PATH, ROUTES } from '@/lib/constants';
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Check if the path is a public route
-  const isPublicRoute = PUBLIC_ROUTES.some(
+  // Note: Next.js middleware receives pathnames with basePath already stripped
+  const isPublicRoute = PUBLIC_ROUTES_NO_BASE_PATH.some(
     (route) => pathname === route || pathname.startsWith(`${route}/`)
   );
 
