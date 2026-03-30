@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Add basePath for path-based routing (e.g., /sirr)
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
+
   // Output standalone build for Docker deployment
   output: 'standalone',
 
