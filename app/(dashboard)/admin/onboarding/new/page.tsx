@@ -77,17 +77,7 @@ export default function NewOnboardingPage() {
       pageTitle="Add Onboarding Question"
       backHref="/admin/onboarding"
     >
-          <AlertTitle>Access Denied</AlertTitle>
-          <AlertDescription>
-            You do not have permission to access this page.
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-6">
+      <div className="space-y-6">
       <PageHeader
         title="Add Onboarding Question"
         description="Create a new onboarding question"
