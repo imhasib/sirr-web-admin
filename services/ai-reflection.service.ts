@@ -23,7 +23,7 @@ export interface AIReflectionRequest {
 export const aiReflectionService = {
   async testReflection(data: AIReflectionRequest): Promise<AIReflectionResponse> {
     const response = await apiClient.post<AIReflectionResponse>(
-      '/journals/reflection/admin/test',
+      '/admin/journals/reflection/test',
       data
     );
     return response.data;

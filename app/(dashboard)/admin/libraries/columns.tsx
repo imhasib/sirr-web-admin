@@ -55,12 +55,20 @@ export const createColumns = ({ onDelete }: ColumnOptions): ColumnDef<Library>[]
       return (
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" asChild>
-            <a href={library.link} target="_blank" rel="noopener noreferrer">
+            <a
+              href={library.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+            >
               <ExternalLink className="h-4 w-4" />
             </a>
           </Button>
           <Button variant="ghost" size="icon" asChild>
-            <Link href={`/admin/libraries/${library._id}/edit`}>
+            <Link
+              href={`/admin/libraries/${library._id}/edit`}
+              onClick={(e) => e.stopPropagation()}
+            >
               <Pencil className="h-4 w-4" />
             </Link>
           </Button>

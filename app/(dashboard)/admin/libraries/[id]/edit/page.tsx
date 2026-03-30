@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLibrary, useUpdateLibrary } from '@/hooks/use-libraries';
 import { useAuthStore } from '@/stores/auth-store';
-import { LibraryCategory, UpdateLibraryRequest } from '@/types';
+import { UpdateLibraryRequest } from '@/types';
 import { librarySchema, type LibraryFormData } from '@/lib/schemas';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -50,7 +50,7 @@ export default function EditLibraryPage() {
       name: '',
       description: '',
       link: '',
-      duration: '',
+      duration: 0,
       category: '',
       premium: true,
     },
@@ -160,20 +160,9 @@ export default function EditLibraryPage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Category *</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a category" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {Object.values(LibraryCategory).map((category) => (
-                            <SelectItem key={category} value={category}>
-                              {category}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <FormControl>
+                        <Input placeholder="Enter category" {...field} />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -201,7 +190,12 @@ export default function EditLibraryPage() {
                     <FormItem>
                       <FormLabel>Duration *</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., 15 mins, 1 hour" {...field} />
+                        <Input
+                          type="number"
+                          placeholder="Duration in minutes"
+                          {...field}
+                          onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : '')}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

@@ -19,17 +19,17 @@ export const therapistService = {
   },
 
   async createTherapist(data: CreateTherapistRequest): Promise<{ success: boolean; message: string; data: Therapist }> {
-    const response = await apiClient.post<{ success: boolean; message: string; data: Therapist }>('/therapists', data);
+    const response = await apiClient.post<{ success: boolean; message: string; data: Therapist }>('/admin/therapists', data);
     return response.data;
   },
 
   async updateTherapist(id: string, data: UpdateTherapistRequest): Promise<{ success: boolean; message: string; data: Therapist }> {
-    const response = await apiClient.put<{ success: boolean; message: string; data: Therapist }>(`/therapists/${id}`, data);
+    const response = await apiClient.put<{ success: boolean; message: string; data: Therapist }>(`/admin/therapists/${id}`, data);
     return response.data;
   },
 
   async deleteTherapist(id: string): Promise<{ success: boolean; message: string }> {
-    const response = await apiClient.delete<{ success: boolean; message: string }>(`/therapists/${id}`);
+    const response = await apiClient.delete<{ success: boolean; message: string }>(`/admin/therapists/${id}`);
     return response.data;
   },
 };

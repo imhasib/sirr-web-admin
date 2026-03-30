@@ -16,7 +16,7 @@ export interface Library {
   name: string;
   description: string;
   link: string;
-  duration: string;
+  duration: number;
   category: LibraryCategoryType;
   premium: boolean;
   createdAt: string;
@@ -27,7 +27,7 @@ export interface CreateLibraryRequest {
   name: string;
   description: string;
   link: string;
-  duration: string;
+  duration: number;
   category: LibraryCategoryType;
   premium?: boolean;
 }

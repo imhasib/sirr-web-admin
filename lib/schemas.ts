@@ -56,7 +56,7 @@ export const librarySchema = z.object({
   name: z.string().min(1, 'Name is required').max(200, 'Name must be less than 200 characters'),
   description: z.string().min(1, 'Description is required').max(2000, 'Description must be less than 2000 characters'),
   link: z.string().url('Must be a valid URL'),
-  duration: z.string().min(1, 'Duration is required'),
+  duration: z.coerce.number().positive('Duration must be a positive number'),
   category: z.string().min(1, 'Category is required'),
   premium: z.boolean().default(true),
 });

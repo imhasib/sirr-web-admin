@@ -9,7 +9,7 @@ import {
 
 export const onboardingService = {
   async getQuestions(): Promise<OnboardingQuestionsResponse> {
-    const response = await apiClient.get<OnboardingQuestionsResponse>('/onboarding/admin/questions');
+    const response = await apiClient.get<OnboardingQuestionsResponse>('/admin/onboarding/questions');
     return response.data;
   },
 
@@ -20,7 +20,7 @@ export const onboardingService = {
 
   async createQuestion(data: CreateOnboardingQuestionRequest): Promise<{ success: boolean; message: string; data: OnboardingQuestion }> {
     const response = await apiClient.post<{ success: boolean; message: string; data: OnboardingQuestion }>(
-      '/onboarding/admin/questions',
+      '/admin/onboarding/questions',
       data
     );
     return response.data;
@@ -28,7 +28,7 @@ export const onboardingService = {
 
   async updateQuestion(slug: string, data: UpdateOnboardingQuestionRequest): Promise<{ success: boolean; message: string; data: OnboardingQuestion }> {
     const response = await apiClient.patch<{ success: boolean; message: string; data: OnboardingQuestion }>(
-      `/onboarding/admin/questions/${slug}`,
+      `/admin/onboarding/questions/${slug}`,
       data
     );
     return response.data;
@@ -36,7 +36,7 @@ export const onboardingService = {
 
   async deleteQuestion(slug: string): Promise<{ success: boolean; message: string }> {
     const response = await apiClient.delete<{ success: boolean; message: string }>(
-      `/onboarding/admin/questions/${slug}`
+      `/admin/onboarding/questions/${slug}`
     );
     return response.data;
   },
