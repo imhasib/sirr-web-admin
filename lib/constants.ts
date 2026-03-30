@@ -16,6 +16,8 @@ export const ROUTES = {
   DASHBOARD: '/dashboard',
   SETTINGS: '/settings',
   PROMPT_SETTINGS: '/settings/prompts',
+  PROFILE_SETTINGS: '/settings/profile',
+  PASSWORD_SETTINGS: '/settings/password',
 
   // Admin - Libraries
   ADMIN_LIBRARIES: '/admin/libraries',
