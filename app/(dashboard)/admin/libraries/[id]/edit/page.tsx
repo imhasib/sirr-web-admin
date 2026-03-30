@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLibrary, useUpdateLibrary } from '@/hooks/use-libraries';
-import { useAuthStore } from '@/stores/auth-store';
 import { UpdateLibraryRequest } from '@/types';
 import { librarySchema, type LibraryFormData } from '@/lib/schemas';
 import { Button } from '@/components/ui/button';
@@ -31,6 +30,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { PageHeader } from '@/components/common';
+import { RequireAdmin } from '@/components/auth';
 import { Loader2 } from 'lucide-react';
 
 export default function EditLibraryPage() {
@@ -38,11 +38,8 @@ export default function EditLibraryPage() {
   const router = useRouter();
   const id = params.id as string;
 
-  const { user } = useAuthStore();
   const { data: library, isLoading, error } = useLibrary(id);
   const updateLibrary = useUpdateLibrary();
-
-  const isAdmin = user?.role === 'admin';
 
   const form = useForm<LibraryFormData>({
     resolver: zodResolver(librarySchema),
@@ -78,24 +75,12 @@ export default function EditLibraryPage() {
     router.push(`/admin/libraries/${id}`);
   };
 
-  if (!isAdmin) {
-    return (
-      <div className="space-y-6">
-        <PageHeader title="Edit Library" backHref="/admin/libraries" />
-        <Alert variant="destructive">
-          <AlertTitle>Access Denied</AlertTitle>
-          <AlertDescription>
-            You do not have permission to access this page.
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <PageHeader title="Edit Library" backHref="/admin/libraries" />
+      <RequireAdmin
+        pageTitle="Edit Library"
+        backHref="/admin/libraries"
+      >
         <Card>
           <CardHeader>
             <Skeleton className="h-6 w-32" />
@@ -106,25 +91,31 @@ export default function EditLibraryPage() {
             ))}
           </CardContent>
         </Card>
-      </div>
+      </RequireAdmin>
     );
   }
 
   if (error || !library) {
     return (
-      <div className="space-y-6">
-        <PageHeader title="Edit Library" backHref="/admin/libraries" />
+      <RequireAdmin
+        pageTitle="Edit Library"
+        backHref="/admin/libraries"
+      >
         <Alert variant="destructive">
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>
             Failed to load library details. The item may not exist.
           </AlertDescription>
         </Alert>
-      </div>
+      </RequireAdmin>
     );
   }
 
   return (
+    <RequireAdmin
+      pageTitle="Edit Library"
+      backHref="/admin/libraries"
+    >
     <div className="space-y-6">
       <PageHeader
         title="Edit Library"
@@ -268,6 +259,7 @@ export default function EditLibraryPage() {
           </Form>
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </RequireAdmin>
   );
 }

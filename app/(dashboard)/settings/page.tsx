@@ -53,7 +53,7 @@ const ADMIN_SETTING_CATEGORIES: SettingCategory[] = [
 
 export default function SettingsPage() {
   const router = useRouter();
-  const { user } = useAuthStore();
+  const { user, isLoading } = useAuthStore();
 
   const isAdmin = user?.role === 'admin';
 
@@ -96,7 +96,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Admin Settings - Only for admins */}
-      {isAdmin && (
+      {isAdmin && !isLoading && (
         <div className="space-y-4">
           <div>
             <h2 className="text-xl font-semibold">System Settings</h2>

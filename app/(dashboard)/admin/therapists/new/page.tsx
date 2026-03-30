@@ -4,14 +4,12 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCreateTherapist } from '@/hooks/use-therapists';
-import { useAuthStore } from '@/stores/auth-store';
 import { TherapistGender, CreateTherapistRequest } from '@/types';
 import { therapistSchema, type TherapistFormData } from '@/lib/schemas';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
   Form,
   FormControl,
@@ -29,14 +27,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { PageHeader } from '@/components/common';
+import { RequireAdmin } from '@/components/auth';
 import { Loader2 } from 'lucide-react';
 
 export default function NewTherapistPage() {
   const router = useRouter();
-  const { user } = useAuthStore();
   const createTherapist = useCreateTherapist();
-
-  const isAdmin = user?.role === 'admin';
 
   const form = useForm<TherapistFormData>({
     resolver: zodResolver(therapistSchema),
@@ -65,21 +61,11 @@ export default function NewTherapistPage() {
     router.push('/admin/therapists');
   };
 
-  if (!isAdmin) {
-    return (
-      <div className="space-y-6">
-        <PageHeader title="Add Therapist" backHref="/admin/therapists" />
-        <Alert variant="destructive">
-          <AlertTitle>Access Denied</AlertTitle>
-          <AlertDescription>
-            You do not have permission to access this page.
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
   return (
+    <RequireAdmin
+      pageTitle="Add Therapist"
+      backHref="/admin/therapists"
+    >
     <div className="space-y-6">
       <PageHeader
         title="Add Therapist"
@@ -241,6 +227,7 @@ export default function NewTherapistPage() {
           </Form>
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </RequireAdmin>
   );
 }

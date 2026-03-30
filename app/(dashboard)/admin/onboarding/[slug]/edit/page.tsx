@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useOnboardingQuestion, useUpdateOnboardingQuestion } from '@/hooks/use-onboarding';
-import { useAuthStore } from '@/stores/auth-store';
 import { SelectionType, UpdateOnboardingQuestionRequest } from '@/types';
 import { editOnboardingQuestionSchema, type EditOnboardingQuestionFormData } from '@/lib/schemas';
 import { Button } from '@/components/ui/button';
@@ -15,6 +14,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
+import { RequireAdmin } from '@/components/auth';
 import {
   Form,
   FormControl,
@@ -39,11 +39,9 @@ export default function EditOnboardingPage() {
   const router = useRouter();
   const slug = params.slug as string;
 
-  const { user } = useAuthStore();
   const { data, isLoading, error } = useOnboardingQuestion(slug);
   const updateQuestion = useUpdateOnboardingQuestion();
 
-  const isAdmin = user?.role === 'admin';
   const question = data;
 
   const form = useForm<EditOnboardingQuestionFormData>({
@@ -103,20 +101,6 @@ export default function EditOnboardingPage() {
     router.push(`/admin/onboarding/${slug}`);
   };
 
-  if (!isAdmin) {
-    return (
-      <div className="space-y-6">
-        <PageHeader title="Edit Question" backHref="/admin/onboarding" />
-        <Alert variant="destructive">
-          <AlertTitle>Access Denied</AlertTitle>
-          <AlertDescription>
-            You do not have permission to access this page.
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -150,12 +134,16 @@ export default function EditOnboardingPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <PageHeader
-        title="Edit Question"
-        description={`Editing: ${question.title}`}
-        backHref={`/admin/onboarding/${slug}`}
-      />
+    <RequireAdmin
+      pageTitle="Edit Question"
+      backHref="/admin/onboarding"
+    >
+      <div className="space-y-6">
+        <PageHeader
+          title="Edit Question"
+          description={`Editing: ${question.title}`}
+          backHref={`/admin/onboarding/${slug}`}
+        />
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -382,6 +370,7 @@ export default function EditOnboardingPage() {
           </div>
         </form>
       </Form>
-    </div>
+      </div>
+    </RequireAdmin>
   );
 }

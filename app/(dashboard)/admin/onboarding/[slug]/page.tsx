@@ -12,13 +12,13 @@ import {
   Calendar,
 } from 'lucide-react';
 import { useOnboardingQuestion, useDeleteOnboardingQuestion } from '@/hooks/use-onboarding';
-import { useAuthStore } from '@/stores/auth-store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader, ConfirmDialog } from '@/components/common';
+import { RequireAdmin } from '@/components/auth';
 import { formatDateTime } from '@/lib/utils';
 import Link from 'next/link';
 
@@ -27,13 +27,11 @@ export default function OnboardingDetailPage() {
   const router = useRouter();
   const slug = params.slug as string;
 
-  const { user } = useAuthStore();
   const { data, isLoading, error } = useOnboardingQuestion(slug);
   const deleteQuestion = useDeleteOnboardingQuestion();
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const isAdmin = user?.role === 'admin';
   const question = data;
 
   const handleDelete = async () => {
@@ -41,24 +39,12 @@ export default function OnboardingDetailPage() {
     router.push('/admin/onboarding');
   };
 
-  if (!isAdmin) {
-    return (
-      <div className="space-y-6">
-        <PageHeader title="Question Details" backHref="/admin/onboarding" />
-        <Alert variant="destructive">
-          <AlertTitle>Access Denied</AlertTitle>
-          <AlertDescription>
-            You do not have permission to access this page.
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <PageHeader title="Question Details" backHref="/admin/onboarding" />
+      <RequireAdmin
+        pageTitle="Question Details"
+        backHref="/admin/onboarding"
+      >
         <Card>
           <CardHeader>
             <Skeleton className="h-8 w-64" />
@@ -69,25 +55,31 @@ export default function OnboardingDetailPage() {
             ))}
           </CardContent>
         </Card>
-      </div>
+      </RequireAdmin>
     );
   }
 
   if (error || !question) {
     return (
-      <div className="space-y-6">
-        <PageHeader title="Question Details" backHref="/admin/onboarding" />
+      <RequireAdmin
+        pageTitle="Question Details"
+        backHref="/admin/onboarding"
+      >
         <Alert variant="destructive">
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>
             Failed to load question details. The question may not exist.
           </AlertDescription>
         </Alert>
-      </div>
+      </RequireAdmin>
     );
   }
 
   return (
+    <RequireAdmin
+      pageTitle="Question Details"
+      backHref="/admin/onboarding"
+    >
     <div className="space-y-6">
       <PageHeader
         title={question.title}
@@ -244,11 +236,12 @@ export default function OnboardingDetailPage() {
         onOpenChange={setShowDeleteDialog}
         title="Delete Question"
         description={`Are you sure you want to delete "${question.title}"? This action cannot be undone.`}
-        confirmText="Delete"
-        onConfirm={handleDelete}
-        isDestructive
-        isLoading={deleteQuestion.isPending}
-      />
-    </div>
+                  confirmText="Delete"
+          onConfirm={handleDelete}
+          isDestructive
+          isLoading={deleteQuestion.isPending}
+        />
+      </div>
+    </RequireAdmin>
   );
 }

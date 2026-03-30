@@ -4,14 +4,12 @@ import { useRouter } from 'next/navigation';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCreateOnboardingQuestion } from '@/hooks/use-onboarding';
-import { useAuthStore } from '@/stores/auth-store';
 import { SelectionType, CreateOnboardingQuestionRequest } from '@/types';
 import { createOnboardingQuestionSchema, type CreateOnboardingQuestionFormData } from '@/lib/schemas';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
   Form,
   FormControl,
@@ -29,14 +27,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { PageHeader } from '@/components/common';
+import { RequireAdmin } from '@/components/auth';
 import { Loader2, Plus, Trash2 } from 'lucide-react';
 
 export default function NewOnboardingPage() {
   const router = useRouter();
-  const { user } = useAuthStore();
   const createQuestion = useCreateOnboardingQuestion();
-
-  const isAdmin = user?.role === 'admin';
 
   const form = useForm<CreateOnboardingQuestionFormData>({
     resolver: zodResolver(createOnboardingQuestionSchema),
@@ -76,11 +72,11 @@ export default function NewOnboardingPage() {
     router.push(`/admin/onboarding/${result.data.slug}`);
   };
 
-  if (!isAdmin) {
-    return (
-      <div className="space-y-6">
-        <PageHeader title="Add Onboarding Question" backHref="/admin/onboarding" />
-        <Alert variant="destructive">
+  return (
+    <RequireAdmin
+      pageTitle="Add Onboarding Question"
+      backHref="/admin/onboarding"
+    >
           <AlertTitle>Access Denied</AlertTitle>
           <AlertDescription>
             You do not have permission to access this page.
@@ -314,6 +310,7 @@ export default function NewOnboardingPage() {
           </div>
         </form>
       </Form>
-    </div>
+      </div>
+    </RequireAdmin>
   );
 }

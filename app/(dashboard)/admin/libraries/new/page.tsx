@@ -4,14 +4,12 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCreateLibrary } from '@/hooks/use-libraries';
-import { useAuthStore } from '@/stores/auth-store';
 import { CreateLibraryRequest } from '@/types';
 import { librarySchema, type LibraryFormData } from '@/lib/schemas';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
   Form,
   FormControl,
@@ -29,14 +27,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { PageHeader } from '@/components/common';
+import { RequireAdmin } from '@/components/auth';
 import { Loader2 } from 'lucide-react';
 
 export default function NewLibraryPage() {
   const router = useRouter();
-  const { user } = useAuthStore();
   const createLibrary = useCreateLibrary();
-
-  const isAdmin = user?.role === 'admin';
 
   const form = useForm<LibraryFormData>({
     resolver: zodResolver(librarySchema),
@@ -59,21 +55,11 @@ export default function NewLibraryPage() {
     router.push('/admin/libraries');
   };
 
-  if (!isAdmin) {
-    return (
-      <div className="space-y-6">
-        <PageHeader title="Add Library" backHref="/admin/libraries" />
-        <Alert variant="destructive">
-          <AlertTitle>Access Denied</AlertTitle>
-          <AlertDescription>
-            You do not have permission to access this page.
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
   return (
+    <RequireAdmin
+      pageTitle="Add Library"
+      backHref="/admin/libraries"
+    >
     <div className="space-y-6">
       <PageHeader
         title="Add Library"
@@ -217,6 +203,7 @@ export default function NewLibraryPage() {
           </Form>
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </RequireAdmin>
   );
 }

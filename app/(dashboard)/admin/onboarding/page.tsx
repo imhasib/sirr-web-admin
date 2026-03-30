@@ -12,7 +12,6 @@ import {
   ClipboardList,
 } from 'lucide-react';
 import { useOnboardingQuestions, useDeleteOnboardingQuestion } from '@/hooks/use-onboarding';
-import { useAuthStore } from '@/stores/auth-store';
 import { OnboardingQuestion } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,19 +20,18 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader, ConfirmDialog, EmptyState } from '@/components/common';
+import { RequireAdmin } from '@/components/auth';
 import { formatDateTime } from '@/lib/utils';
 import Link from 'next/link';
 
 export default function OnboardingListPage() {
   const router = useRouter();
-  const { user } = useAuthStore();
   const { data, isLoading, error } = useOnboardingQuestions();
   const deleteQuestion = useDeleteOnboardingQuestion();
 
   const [search, setSearch] = useState('');
   const [deleteSlug, setDeleteSlug] = useState<string | null>(null);
 
-  const isAdmin = user?.role === 'admin';
   const questions = data?.questions || [];
 
   const filteredQuestions = questions.filter(
@@ -49,21 +47,8 @@ export default function OnboardingListPage() {
     }
   };
 
-  if (!isAdmin) {
-    return (
-      <div className="space-y-6">
-        <PageHeader title="Onboarding Questions" />
-        <Alert variant="destructive">
-          <AlertTitle>Access Denied</AlertTitle>
-          <AlertDescription>
-            You do not have permission to access this page.
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
   return (
+    <RequireAdmin pageTitle="Onboarding Questions">
     <div className="space-y-6">
       <PageHeader
         title="Onboarding Questions"
@@ -146,17 +131,18 @@ export default function OnboardingListPage() {
         </div>
       )}
 
-      <ConfirmDialog
-        open={!!deleteSlug}
-        onOpenChange={(open) => !open && setDeleteSlug(null)}
-        title="Delete Question"
-        description={`Are you sure you want to delete this question? This action cannot be undone.`}
-        confirmText="Delete"
-        onConfirm={handleDelete}
-        isDestructive
-        isLoading={deleteQuestion.isPending}
-      />
-    </div>
+        <ConfirmDialog
+          open={!!deleteSlug}
+          onOpenChange={(open) => !open && setDeleteSlug(null)}
+          title="Delete Question"
+          description={`Are you sure you want to delete this question? This action cannot be undone.`}
+          confirmText="Delete"
+          onConfirm={handleDelete}
+          isDestructive
+          isLoading={deleteQuestion.isPending}
+        />
+      </div>
+    </RequireAdmin>
   );
 }
 

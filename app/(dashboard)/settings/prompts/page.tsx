@@ -9,20 +9,18 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useSettings, usePromptSchemas } from '@/hooks/use-settings';
-import { useAuthStore } from '@/stores/auth-store';
 import { EditSettingDialog } from '@/components/settings';
+import { RequireAdmin } from '@/components/auth';
 import { Setting, getSettingLabel } from '@/types';
 import { formatDateTime } from '@/lib/utils';
 import { ROUTES } from '@/lib/constants';
 
 export default function PromptSettingsPage() {
   const router = useRouter();
-  const { user } = useAuthStore();
   const { data: settings, isLoading: settingsLoading, error: settingsError } = useSettings();
   const { data: promptSchemas, isLoading: schemasLoading } = usePromptSchemas();
   const [editingSetting, setEditingSetting] = useState<Setting | null>(null);
 
-  const isAdmin = user?.role === 'admin';
   const isLoading = settingsLoading || schemasLoading;
 
   // Filter only prompt-related settings
@@ -33,33 +31,12 @@ export default function PromptSettingsPage() {
     return promptSchemas?.schemas?.[key];
   };
 
-  // Show access denied for non-admins
-  if (!isAdmin) {
-    return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Prompt Settings</h1>
-          <p className="text-muted-foreground">Manage system prompts</p>
-        </div>
-
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Access Denied</AlertTitle>
-          <AlertDescription>
-            You do not have permission to access this page. Only administrators can manage prompt settings.
-          </AlertDescription>
-        </Alert>
-
-        <Button variant="outline" onClick={() => router.push(ROUTES.DASHBOARD)}>
-          Go to Dashboard
-        </Button>
-      </div>
-    );
-  }
-
   if (isLoading) {
     return (
-      <div className="space-y-6">
+      <RequireAdmin
+        pageTitle="Prompt Settings"
+        pageDescription="Manage system prompts"
+      >
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => router.push(ROUTES.SETTINGS)}>
             <ArrowLeft className="h-4 w-4" />
@@ -83,13 +60,16 @@ export default function PromptSettingsPage() {
             </Card>
           ))}
         </div>
-      </div>
+      </RequireAdmin>
     );
   }
 
   if (settingsError) {
     return (
-      <div className="space-y-6">
+      <RequireAdmin
+        pageTitle="Prompt Settings"
+        pageDescription="Manage system prompts"
+      >
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => router.push(ROUTES.SETTINGS)}>
             <ArrowLeft className="h-4 w-4" />
@@ -107,11 +87,15 @@ export default function PromptSettingsPage() {
             Failed to load prompt settings. Please try again later.
           </AlertDescription>
         </Alert>
-      </div>
+      </RequireAdmin>
     );
   }
 
   return (
+    <RequireAdmin
+      pageTitle="Prompt Settings"
+      pageDescription="Manage system prompts"
+    >
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={() => router.push(ROUTES.SETTINGS)}>
@@ -176,12 +160,13 @@ export default function PromptSettingsPage() {
         )}
       </div>
 
-      <EditSettingDialog
-        setting={editingSetting}
-        open={!!editingSetting}
-        onOpenChange={(open) => !open && setEditingSetting(null)}
-        outputSchema={editingSetting ? getOutputSchema(editingSetting.key) : undefined}
-      />
-    </div>
+        <EditSettingDialog
+          setting={editingSetting}
+          open={!!editingSetting}
+          onOpenChange={(open) => !open && setEditingSetting(null)}
+          outputSchema={editingSetting ? getOutputSchema(editingSetting.key) : undefined}
+        />
+      </div>
+    </RequireAdmin>
   );
 }

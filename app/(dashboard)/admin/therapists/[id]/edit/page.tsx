@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTherapist, useUpdateTherapist } from '@/hooks/use-therapists';
-import { useAuthStore } from '@/stores/auth-store';
 import { TherapistGender, UpdateTherapistRequest } from '@/types';
 import { therapistSchema, type TherapistFormData } from '@/lib/schemas';
 import { Button } from '@/components/ui/button';
@@ -31,6 +30,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { PageHeader } from '@/components/common';
+import { RequireAdmin } from '@/components/auth';
 import { Loader2 } from 'lucide-react';
 
 export default function EditTherapistPage() {
@@ -38,11 +38,9 @@ export default function EditTherapistPage() {
   const router = useRouter();
   const id = params.id as string;
 
-  const { user } = useAuthStore();
   const { data, isLoading, error } = useTherapist(id);
   const updateTherapist = useUpdateTherapist();
 
-  const isAdmin = user?.role === 'admin';
   const therapist = data?.data;
 
   const form = useForm<TherapistFormData>({
@@ -86,24 +84,12 @@ export default function EditTherapistPage() {
     router.push(`/admin/therapists/${id}`);
   };
 
-  if (!isAdmin) {
-    return (
-      <div className="space-y-6">
-        <PageHeader title="Edit Therapist" backHref="/admin/therapists" />
-        <Alert variant="destructive">
-          <AlertTitle>Access Denied</AlertTitle>
-          <AlertDescription>
-            You do not have permission to access this page.
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <PageHeader title="Edit Therapist" backHref="/admin/therapists" />
+      <RequireAdmin
+        pageTitle="Edit Therapist"
+        backHref="/admin/therapists"
+      >
         <Card>
           <CardHeader>
             <Skeleton className="h-6 w-32" />
@@ -114,25 +100,31 @@ export default function EditTherapistPage() {
             ))}
           </CardContent>
         </Card>
-      </div>
+      </RequireAdmin>
     );
   }
 
   if (error || !therapist) {
     return (
-      <div className="space-y-6">
-        <PageHeader title="Edit Therapist" backHref="/admin/therapists" />
+      <RequireAdmin
+        pageTitle="Edit Therapist"
+        backHref="/admin/therapists"
+      >
         <Alert variant="destructive">
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>
             Failed to load therapist details. The profile may not exist.
           </AlertDescription>
         </Alert>
-      </div>
+      </RequireAdmin>
     );
   }
 
   return (
+    <RequireAdmin
+      pageTitle="Edit Therapist"
+      backHref="/admin/therapists"
+    >
     <div className="space-y-6">
       <PageHeader
         title="Edit Therapist"
@@ -294,6 +286,7 @@ export default function EditTherapistPage() {
           </Form>
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </RequireAdmin>
   );
 }

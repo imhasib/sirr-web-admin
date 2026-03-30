@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Pencil, Trash2, User, Briefcase, Tag, Calendar } from 'lucide-react';
 import { useTherapist, useDeleteTherapist } from '@/hooks/use-therapists';
-import { useAuthStore } from '@/stores/auth-store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader, ConfirmDialog } from '@/components/common';
+import { RequireAdmin } from '@/components/auth';
 import { formatDateTime } from '@/lib/utils';
 import Link from 'next/link';
 
@@ -20,13 +20,11 @@ export default function TherapistDetailPage() {
   const router = useRouter();
   const id = params.id as string;
 
-  const { user } = useAuthStore();
   const { data, isLoading, error } = useTherapist(id);
   const deleteTherapist = useDeleteTherapist();
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const isAdmin = user?.role === 'admin';
   const therapist = data?.data;
 
   const handleDelete = async () => {
@@ -34,24 +32,12 @@ export default function TherapistDetailPage() {
     router.push('/admin/therapists');
   };
 
-  if (!isAdmin) {
-    return (
-      <div className="space-y-6">
-        <PageHeader title="Therapist Details" backHref="/admin/therapists" />
-        <Alert variant="destructive">
-          <AlertTitle>Access Denied</AlertTitle>
-          <AlertDescription>
-            You do not have permission to access this page.
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <PageHeader title="Therapist Details" backHref="/admin/therapists" />
+      <RequireAdmin
+        pageTitle="Therapist Details"
+        backHref="/admin/therapists"
+      >
         <Card>
           <CardHeader>
             <Skeleton className="h-8 w-64" />
@@ -62,25 +48,31 @@ export default function TherapistDetailPage() {
             ))}
           </CardContent>
         </Card>
-      </div>
+      </RequireAdmin>
     );
   }
 
   if (error || !therapist) {
     return (
-      <div className="space-y-6">
-        <PageHeader title="Therapist Details" backHref="/admin/therapists" />
+      <RequireAdmin
+        pageTitle="Therapist Details"
+        backHref="/admin/therapists"
+      >
         <Alert variant="destructive">
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>
             Failed to load therapist details. The profile may not exist.
           </AlertDescription>
         </Alert>
-      </div>
+      </RequireAdmin>
     );
   }
 
   return (
+    <RequireAdmin
+      pageTitle="Therapist Details"
+      backHref="/admin/therapists"
+    >
     <div className="space-y-6">
       <PageHeader
         title={therapist.name}
@@ -213,11 +205,12 @@ export default function TherapistDetailPage() {
         onOpenChange={setShowDeleteDialog}
         title="Delete Therapist"
         description={`Are you sure you want to delete "${therapist.name}"? This action cannot be undone.`}
-        confirmText="Delete"
-        onConfirm={handleDelete}
-        isDestructive
-        isLoading={deleteTherapist.isPending}
-      />
-    </div>
+          confirmText="Delete"
+          onConfirm={handleDelete}
+          isDestructive
+          isLoading={deleteTherapist.isPending}
+        />
+      </div>
+    </RequireAdmin>
   );
 }

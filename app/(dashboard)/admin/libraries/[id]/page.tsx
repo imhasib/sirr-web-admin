@@ -4,13 +4,13 @@ import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Pencil, Trash2, ExternalLink, Clock, Tag, Star } from 'lucide-react';
 import { useLibrary, useDeleteLibrary } from '@/hooks/use-libraries';
-import { useAuthStore } from '@/stores/auth-store';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader, ConfirmDialog } from '@/components/common';
+import { RequireAdmin } from '@/components/auth';
 import { formatDateTime } from '@/lib/utils';
 import Link from 'next/link';
 
@@ -19,37 +19,22 @@ export default function LibraryDetailPage() {
   const router = useRouter();
   const id = params.id as string;
 
-  const { user } = useAuthStore();
   const { data: library, isLoading, error } = useLibrary(id);
   const deleteLibrary = useDeleteLibrary();
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-
-  const isAdmin = user?.role === 'admin';
 
   const handleDelete = async () => {
     await deleteLibrary.mutateAsync(id);
     router.push('/admin/libraries');
   };
 
-  if (!isAdmin) {
-    return (
-      <div className="space-y-6">
-        <PageHeader title="Library Details" backHref="/admin/libraries" />
-        <Alert variant="destructive">
-          <AlertTitle>Access Denied</AlertTitle>
-          <AlertDescription>
-            You do not have permission to access this page.
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <PageHeader title="Library Details" backHref="/admin/libraries" />
+      <RequireAdmin
+        pageTitle="Library Details"
+        backHref="/admin/libraries"
+      >
         <Card>
           <CardHeader>
             <Skeleton className="h-8 w-64" />
@@ -60,25 +45,31 @@ export default function LibraryDetailPage() {
             ))}
           </CardContent>
         </Card>
-      </div>
+      </RequireAdmin>
     );
   }
 
   if (error || !library) {
     return (
-      <div className="space-y-6">
-        <PageHeader title="Library Details" backHref="/admin/libraries" />
+      <RequireAdmin
+        pageTitle="Library Details"
+        backHref="/admin/libraries"
+      >
         <Alert variant="destructive">
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>
             Failed to load library details. The item may not exist.
           </AlertDescription>
         </Alert>
-      </div>
+      </RequireAdmin>
     );
   }
 
   return (
+    <RequireAdmin
+      pageTitle="Library Details"
+      backHref="/admin/libraries"
+    >
     <div className="space-y-6">
       <PageHeader
         title={library.name}
@@ -197,16 +188,17 @@ export default function LibraryDetailPage() {
         </Card>
       </div>
 
-      <ConfirmDialog
-        open={showDeleteDialog}
-        onOpenChange={setShowDeleteDialog}
-        title="Delete Library"
-        description={`Are you sure you want to delete "${library.name}"? This action cannot be undone.`}
-        confirmText="Delete"
-        onConfirm={handleDelete}
-        isDestructive
-        isLoading={deleteLibrary.isPending}
-      />
-    </div>
+        <ConfirmDialog
+          open={showDeleteDialog}
+          onOpenChange={setShowDeleteDialog}
+          title="Delete Library"
+          description={`Are you sure you want to delete "${library.name}"? This action cannot be undone.`}
+          confirmText="Delete"
+          onConfirm={handleDelete}
+          isDestructive
+          isLoading={deleteLibrary.isPending}
+        />
+      </div>
+    </RequireAdmin>
   );
 }

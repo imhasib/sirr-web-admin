@@ -4,19 +4,18 @@ import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, Users } from 'lucide-react';
 import { useTherapists, useDeleteTherapist } from '@/hooks/use-therapists';
-import { useAuthStore } from '@/stores/auth-store';
 import { Therapist } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { DataTable, PageHeader, EmptyState, ConfirmDialog } from '@/components/common';
+import { RequireAdmin } from '@/components/auth';
 import { createColumns } from './columns';
 import Link from 'next/link';
 
 export default function TherapistsPage() {
   const router = useRouter();
-  const { user } = useAuthStore();
   const { data, isLoading, error } = useTherapists({ limit: 100 });
   const deleteTherapist = useDeleteTherapist();
 
@@ -24,8 +23,6 @@ export default function TherapistsPage() {
     open: boolean;
     therapist: Therapist | null;
   }>({ open: false, therapist: null });
-
-  const isAdmin = user?.role === 'admin';
 
   const therapists = data?.data?.profiles || [];
 
@@ -41,35 +38,27 @@ export default function TherapistsPage() {
 
   const columns = useMemo(() => createColumns({ onDelete: handleDelete }), []);
 
-  if (!isAdmin) {
-    return (
-      <div className="space-y-6">
-        <PageHeader title="Therapist Management" description="Manage therapist profiles" />
-        <Alert variant="destructive">
-          <AlertTitle>Access Denied</AlertTitle>
-          <AlertDescription>
-            You do not have permission to access this page.
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
   if (error) {
     return (
-      <div className="space-y-6">
-        <PageHeader title="Therapist Management" description="Manage therapist profiles" />
+      <RequireAdmin
+        pageTitle="Therapist Management"
+        pageDescription="Manage therapist profiles"
+      >
         <Alert variant="destructive">
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>
             Failed to load therapists. Please try again later.
           </AlertDescription>
         </Alert>
-      </div>
+      </RequireAdmin>
     );
   }
 
   return (
+    <RequireAdmin
+      pageTitle="Therapist Management"
+      pageDescription="Manage therapist profiles"
+    >
     <div className="space-y-6">
       <PageHeader
         title="Therapist Management"
@@ -128,16 +117,17 @@ export default function TherapistsPage() {
         </Card>
       )}
 
-      <ConfirmDialog
-        open={deleteDialog.open}
-        onOpenChange={(open) => setDeleteDialog({ open, therapist: null })}
-        title="Delete Therapist"
-        description={`Are you sure you want to delete "${deleteDialog.therapist?.name}"? This action cannot be undone.`}
-        confirmText="Delete"
-        onConfirm={confirmDelete}
-        isDestructive
-        isLoading={deleteTherapist.isPending}
-      />
-    </div>
+        <ConfirmDialog
+          open={deleteDialog.open}
+          onOpenChange={(open) => setDeleteDialog({ open, therapist: null })}
+          title="Delete Therapist"
+          description={`Are you sure you want to delete "${deleteDialog.therapist?.name}"? This action cannot be undone.`}
+          confirmText="Delete"
+          onConfirm={confirmDelete}
+          isDestructive
+          isLoading={deleteTherapist.isPending}
+        />
+      </div>
+    </RequireAdmin>
   );
 }

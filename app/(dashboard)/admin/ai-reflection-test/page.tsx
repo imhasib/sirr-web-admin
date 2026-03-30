@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useAuthStore } from '@/stores/auth-store';
 import { aiReflectionService, AIReflectionResponse } from '@/services/ai-reflection.service';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -20,6 +19,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { PageHeader } from '@/components/common';
+import { RequireAdmin } from '@/components/auth';
 import { Loader2, Sparkles, BookOpen, Eye, Lightbulb, Star } from 'lucide-react';
 
 const promptSchema = z.object({
@@ -32,12 +32,9 @@ const promptSchema = z.object({
 type PromptFormValues = z.infer<typeof promptSchema>;
 
 export default function AIReflectionTestPage() {
-  const { user } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [response, setResponse] = useState<AIReflectionResponse | null>(null);
-
-  const isAdmin = user?.role === 'admin';
 
   const form = useForm<PromptFormValues>({
     resolver: zodResolver(promptSchema),
@@ -70,21 +67,8 @@ export default function AIReflectionTestPage() {
     }
   };
 
-  if (!isAdmin) {
-    return (
-      <div className="space-y-6">
-        <PageHeader title="AI Reflection Test" />
-        <Alert variant="destructive">
-          <AlertTitle>Access Denied</AlertTitle>
-          <AlertDescription>
-            You do not have permission to access this page.
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
   return (
+    <RequireAdmin pageTitle="AI Reflection Test">
     <div className="space-y-6">
       <PageHeader
         title="AI Reflection Test"
@@ -236,6 +220,7 @@ export default function AIReflectionTestPage() {
           </Card>
         </div>
       )}
-    </div>
+      </div>
+    </RequireAdmin>
   );
 }

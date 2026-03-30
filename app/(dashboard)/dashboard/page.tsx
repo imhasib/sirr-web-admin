@@ -1,11 +1,11 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { AlertCircle, MessageSquareText, ChevronRight, BookOpen, Users, ClipboardList, Sparkles } from 'lucide-react';
+import { MessageSquareText, ChevronRight, BookOpen, Users, ClipboardList, Sparkles } from 'lucide-react';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 import { useAuthStore } from '@/stores/auth-store';
+import { AdminAccessWarning } from '@/components/auth';
 import { ROUTES } from '@/lib/constants';
 
 export default function DashboardPage() {
@@ -15,16 +15,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      {!isAdmin && (
-        <Alert variant="warning">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Limited Access</AlertTitle>
-          <AlertDescription>
-            You are logged in as a regular user. Some admin features may not be available to you.
-            Contact your administrator if you need elevated permissions.
-          </AlertDescription>
-        </Alert>
-      )}
+      <AdminAccessWarning />
 
       {isAdmin && (
         <>
