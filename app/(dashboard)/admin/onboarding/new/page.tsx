@@ -3,10 +3,10 @@
 import { useRouter } from 'next/navigation';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import { useCreateOnboardingQuestion } from '@/hooks/use-onboarding';
 import { useAuthStore } from '@/stores/auth-store';
 import { SelectionType, CreateOnboardingQuestionRequest } from '@/types';
+import { createOnboardingQuestionSchema, type CreateOnboardingQuestionFormData } from '@/lib/schemas';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -31,28 +31,6 @@ import {
 import { PageHeader } from '@/components/common';
 import { Loader2, Plus, Trash2 } from 'lucide-react';
 
-const optionSchema = z.object({
-  slug: z.string().min(1, 'Option slug is required'),
-  label: z.string().min(1, 'Option label is required'),
-  description: z.string().optional(),
-});
-
-const questionSchema = z.object({
-  slug: z
-    .string()
-    .min(1, 'Slug is required')
-    .regex(/^[a-z0-9_]+$/, 'Slug must be lowercase with underscores only'),
-  title: z.string().min(1, 'Title is required').max(200, 'Title must be less than 200 characters'),
-  subtitle: z.string().max(500, 'Subtitle must be less than 500 characters').optional(),
-  stepLabel: z.string().max(100, 'Step label must be less than 100 characters').optional(),
-  selectionType: z.enum(['single', 'multiple']),
-  minSelections: z.coerce.number().min(0, 'Min selections must be at least 0').default(1),
-  order: z.coerce.number().min(0, 'Order must be at least 0').default(0),
-  options: z.array(optionSchema).min(1, 'At least one option is required'),
-});
-
-type QuestionFormValues = z.infer<typeof questionSchema>;
-
 export default function NewOnboardingPage() {
   const router = useRouter();
   const { user } = useAuthStore();
@@ -60,8 +38,8 @@ export default function NewOnboardingPage() {
 
   const isAdmin = user?.role === 'admin';
 
-  const form = useForm<QuestionFormValues>({
-    resolver: zodResolver(questionSchema),
+  const form = useForm<CreateOnboardingQuestionFormData>({
+    resolver: zodResolver(createOnboardingQuestionSchema),
     defaultValues: {
       slug: '',
       title: '',
@@ -79,7 +57,7 @@ export default function NewOnboardingPage() {
     name: 'options',
   });
 
-  const onSubmit = async (values: QuestionFormValues) => {
+  const onSubmit = async (values: CreateOnboardingQuestionFormData) => {
     const data: CreateOnboardingQuestionRequest = {
       slug: values.slug,
       title: values.title,

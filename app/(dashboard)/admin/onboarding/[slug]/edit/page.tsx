@@ -4,10 +4,10 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import { useOnboardingQuestion, useUpdateOnboardingQuestion } from '@/hooks/use-onboarding';
 import { useAuthStore } from '@/stores/auth-store';
 import { SelectionType, UpdateOnboardingQuestionRequest } from '@/types';
+import { editOnboardingQuestionSchema, type EditOnboardingQuestionFormData } from '@/lib/schemas';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -34,25 +34,6 @@ import {
 import { PageHeader } from '@/components/common';
 import { Loader2, Plus, Trash2 } from 'lucide-react';
 
-const optionSchema = z.object({
-  slug: z.string().min(1, 'Option slug is required'),
-  label: z.string().min(1, 'Option label is required'),
-  description: z.string().optional(),
-});
-
-const questionSchema = z.object({
-  title: z.string().min(1, 'Title is required').max(200, 'Title must be less than 200 characters'),
-  subtitle: z.string().max(500, 'Subtitle must be less than 500 characters').optional(),
-  stepLabel: z.string().max(100, 'Step label must be less than 100 characters').optional(),
-  selectionType: z.enum(['single', 'multiple']),
-  minSelections: z.coerce.number().min(0, 'Min selections must be at least 0').default(1),
-  order: z.coerce.number().min(0, 'Order must be at least 0').default(0),
-  isActive: z.boolean().default(true),
-  options: z.array(optionSchema).min(1, 'At least one option is required'),
-});
-
-type QuestionFormValues = z.infer<typeof questionSchema>;
-
 export default function EditOnboardingPage() {
   const params = useParams();
   const router = useRouter();
@@ -65,8 +46,8 @@ export default function EditOnboardingPage() {
   const isAdmin = user?.role === 'admin';
   const question = data;
 
-  const form = useForm<QuestionFormValues>({
-    resolver: zodResolver(questionSchema),
+  const form = useForm<EditOnboardingQuestionFormData>({
+    resolver: zodResolver(editOnboardingQuestionSchema),
     defaultValues: {
       title: '',
       subtitle: '',
@@ -103,7 +84,7 @@ export default function EditOnboardingPage() {
     }
   }, [question, form]);
 
-  const onSubmit = async (values: QuestionFormValues) => {
+  const onSubmit = async (values: EditOnboardingQuestionFormData) => {
     const data: UpdateOnboardingQuestionRequest = {
       title: values.title,
       subtitle: values.subtitle || undefined,

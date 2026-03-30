@@ -5,22 +5,50 @@ export const AUTH_TOKEN_KEY = 'sirr_access_token';
 export const REFRESH_TOKEN_KEY = 'sirr_refresh_token';
 
 export const ROUTES = {
+  // Public routes
   HOME: '/',
   LOGIN: '/login',
   REGISTER: '/register',
   FORGOT_PASSWORD: '/forgot-password',
   RESET_PASSWORD: '/reset-password',
+
+  // Protected routes
   DASHBOARD: '/dashboard',
   SETTINGS: '/settings',
   PROMPT_SETTINGS: '/settings/prompts',
-  // Admin routes
+
+  // Admin - Libraries
   ADMIN_LIBRARIES: '/admin/libraries',
   ADMIN_LIBRARIES_NEW: '/admin/libraries/new',
+
+  // Admin - Therapists
   ADMIN_THERAPISTS: '/admin/therapists',
   ADMIN_THERAPISTS_NEW: '/admin/therapists/new',
+
+  // Admin - Onboarding
   ADMIN_ONBOARDING: '/admin/onboarding',
   ADMIN_ONBOARDING_NEW: '/admin/onboarding/new',
+
+  // Admin - Other
   ADMIN_AI_REFLECTION_TEST: '/admin/ai-reflection-test',
+} as const;
+
+/**
+ * Dynamic route generators
+ * Use these functions to generate routes with IDs/slugs
+ */
+export const DYNAMIC_ROUTES = {
+  // Library routes
+  adminLibraryDetail: (id: string) => `/admin/libraries/${id}`,
+  adminLibraryEdit: (id: string) => `/admin/libraries/${id}/edit`,
+
+  // Therapist routes
+  adminTherapistDetail: (id: string) => `/admin/therapists/${id}`,
+  adminTherapistEdit: (id: string) => `/admin/therapists/${id}/edit`,
+
+  // Onboarding routes
+  adminOnboardingDetail: (slug: string) => `/admin/onboarding/${slug}`,
+  adminOnboardingEdit: (slug: string) => `/admin/onboarding/${slug}/edit`,
 } as const;
 
 export const PUBLIC_ROUTES = [

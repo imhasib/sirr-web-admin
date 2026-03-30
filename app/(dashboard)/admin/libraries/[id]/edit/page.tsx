@@ -4,10 +4,10 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import { useLibrary, useUpdateLibrary } from '@/hooks/use-libraries';
 import { useAuthStore } from '@/stores/auth-store';
 import { LibraryCategory, UpdateLibraryRequest } from '@/types';
+import { librarySchema, type LibraryFormData } from '@/lib/schemas';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -33,17 +33,6 @@ import {
 import { PageHeader } from '@/components/common';
 import { Loader2 } from 'lucide-react';
 
-const librarySchema = z.object({
-  name: z.string().min(1, 'Name is required').max(200, 'Name must be less than 200 characters'),
-  description: z.string().min(1, 'Description is required').max(2000, 'Description must be less than 2000 characters'),
-  link: z.string().url('Must be a valid URL'),
-  duration: z.string().min(1, 'Duration is required'),
-  category: z.string().min(1, 'Category is required'),
-  premium: z.boolean().default(true),
-});
-
-type LibraryFormValues = z.infer<typeof librarySchema>;
-
 export default function EditLibraryPage() {
   const params = useParams();
   const router = useRouter();
@@ -55,7 +44,7 @@ export default function EditLibraryPage() {
 
   const isAdmin = user?.role === 'admin';
 
-  const form = useForm<LibraryFormValues>({
+  const form = useForm<LibraryFormData>({
     resolver: zodResolver(librarySchema),
     defaultValues: {
       name: '',
@@ -80,7 +69,7 @@ export default function EditLibraryPage() {
     }
   }, [library, form]);
 
-  const onSubmit = async (values: LibraryFormValues) => {
+  const onSubmit = async (values: LibraryFormData) => {
     const data: UpdateLibraryRequest = {
       ...values,
       category: values.category as UpdateLibraryRequest['category'],

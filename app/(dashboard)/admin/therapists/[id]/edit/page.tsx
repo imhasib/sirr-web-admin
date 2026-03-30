@@ -4,10 +4,10 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import { useTherapist, useUpdateTherapist } from '@/hooks/use-therapists';
 import { useAuthStore } from '@/stores/auth-store';
 import { TherapistGender, UpdateTherapistRequest } from '@/types';
+import { therapistSchema, type TherapistFormData } from '@/lib/schemas';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -33,18 +33,6 @@ import {
 import { PageHeader } from '@/components/common';
 import { Loader2 } from 'lucide-react';
 
-const therapistSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(200, 'Name must be less than 200 characters'),
-  title: z.string().max(100, 'Title must be less than 100 characters').optional(),
-  description: z.string().max(2000, 'Description must be less than 2000 characters').optional(),
-  gender: z.string().optional(),
-  tags: z.string().optional(),
-  photo: z.string().url('Must be a valid URL').optional().or(z.literal('')),
-  userId: z.string().optional(),
-});
-
-type TherapistFormValues = z.infer<typeof therapistSchema>;
-
 export default function EditTherapistPage() {
   const params = useParams();
   const router = useRouter();
@@ -57,7 +45,7 @@ export default function EditTherapistPage() {
   const isAdmin = user?.role === 'admin';
   const therapist = data?.data;
 
-  const form = useForm<TherapistFormValues>({
+  const form = useForm<TherapistFormData>({
     resolver: zodResolver(therapistSchema),
     defaultValues: {
       name: '',
@@ -84,7 +72,7 @@ export default function EditTherapistPage() {
     }
   }, [therapist, form]);
 
-  const onSubmit = async (values: TherapistFormValues) => {
+  const onSubmit = async (values: TherapistFormData) => {
     const data: UpdateTherapistRequest = {
       name: values.name,
       title: values.title || undefined,
