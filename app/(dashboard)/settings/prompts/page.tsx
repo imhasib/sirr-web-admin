@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { MessageSquareText, Pencil, AlertCircle, ArrowLeft } from 'lucide-react';
+import { MessageSquareText, ChevronRight, AlertCircle, ArrowLeft } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -101,7 +101,11 @@ export default function PromptSettingsPage() {
 
       <div className="grid gap-4">
         {promptSettings.map((setting) => (
-          <Card key={setting._id} className="hover:shadow-md transition-shadow">
+          <Card
+            key={setting._id}
+            className="hover:shadow-md transition-shadow cursor-pointer group"
+            onClick={() => router.push(`${ROUTES.PROMPT_SETTINGS}/${setting.key}`)}
+          >
             <CardHeader className="flex flex-row items-start justify-between space-y-0">
               <div className="space-y-1">
                 <CardTitle className="text-lg flex items-center gap-2">
@@ -114,14 +118,7 @@ export default function PromptSettingsPage() {
                   {setting.description || 'No description available'}
                 </CardDescription>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => router.push(`${ROUTES.PROMPT_SETTINGS}/${setting.key}`)}
-              >
-                <Pencil className="h-4 w-4 mr-1" />
-                Edit
-              </Button>
+              <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-4 text-sm text-muted-foreground">

@@ -19,6 +19,26 @@ export default function DashboardPage() {
 
       {isAdmin && (
         <>
+          {/* AI Settings Section */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <Card
+              className="hover:shadow-md transition-shadow cursor-pointer group"
+              onClick={() => router.push(ROUTES.PROMPT_SETTINGS)}
+            >
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="p-2 rounded-lg bg-muted text-muted-foreground">
+                    <MessageSquareText className="h-5 w-5" />
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                </div>
+                <CardTitle>Prompt Settings</CardTitle>
+                <CardDescription>Manage AI prompts and output schemas</CardDescription>
+              </CardHeader>
+            </Card>
+          </div>
+
+          <Separator />
 
           {/* Content Management Section */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
