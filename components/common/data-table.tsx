@@ -43,6 +43,8 @@ interface DataTableProps<TData, TValue> {
   showPagination?: boolean;
   showSearch?: boolean;
   onRowClick?: (row: TData) => void;
+  toolbarLeft?: React.ReactNode;
+  toolbarRight?: React.ReactNode;
 }
 
 export function DataTable<TData, TValue>({
@@ -55,6 +57,8 @@ export function DataTable<TData, TValue>({
   showPagination = true,
   showSearch = true,
   onRowClick,
+  toolbarLeft,
+  toolbarRight,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -87,18 +91,29 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      {showSearch && searchKey && (
-        <div className="flex items-center gap-2">
-          <Input
-            placeholder={searchPlaceholder}
-            value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ''}
-            onChange={(event) =>
-              table.getColumn(searchKey)?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
-          />
+      {(showSearch && searchKey) || toolbarLeft || toolbarRight ? (
+        <div className="flex items-center justify-between gap-4">
+          {/* Left toolbar section */}
+          <div className="flex items-center gap-2">
+            {toolbarLeft}
+          </div>
+
+          {/* Right toolbar section: Search + Actions */}
+          <div className="flex items-center gap-2">
+            {showSearch && searchKey && (
+              <Input
+                placeholder={searchPlaceholder}
+                value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ''}
+                onChange={(event) =>
+                  table.getColumn(searchKey)?.setFilterValue(event.target.value)
+                }
+                className="h-9 w-[250px]"
+              />
+            )}
+            {toolbarRight}
+          </div>
         </div>
-      )}
+      ) : null}
 
       <div className="rounded-md border">
         <Table>
