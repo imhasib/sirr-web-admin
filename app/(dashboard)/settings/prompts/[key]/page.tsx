@@ -192,10 +192,13 @@ export default function PromptEditPage() {
         data: requestData,
       });
 
+      // Handle response - API may return data directly or wrapped in output field
+      const outputData = result.output || result;
+
       const newResult: TestResult = {
         timestamp: result.timestamp || new Date().toISOString(),
         input: inputSummary,
-        output: result.output,
+        output: outputData,
       };
 
       // Add to test results (keep last 5)
@@ -215,6 +218,45 @@ export default function PromptEditPage() {
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
     toast.success(`${label} copied to clipboard`);
+  };
+
+  // Format output for display
+  const formatOutput = (output: any): string => {
+    if (!output) return 'No output';
+
+    // If it's a string, return as is
+    if (typeof output === 'string') return output;
+
+    // For objects, try to format them nicely
+    try {
+      // Check if it's a structured response with specific fields
+      if (typeof output === 'object') {
+        let formatted = '';
+
+        // Handle different response structures
+        Object.entries(output).forEach(([key, value]) => {
+          // Convert camelCase to Title Case
+          const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+
+          if (typeof value === 'object' && value !== null) {
+            formatted += `\n${label}:\n`;
+            Object.entries(value).forEach(([subKey, subValue]) => {
+              const subLabel = subKey.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+              formatted += `  ${subLabel}: ${subValue}\n`;
+            });
+          } else {
+            formatted += `${label}: ${value}\n\n`;
+          }
+        });
+
+        return formatted.trim();
+      }
+
+      // Fallback to JSON
+      return JSON.stringify(output, null, 2);
+    } catch (e) {
+      return JSON.stringify(output, null, 2);
+    }
   };
 
   if (isLoading) {
@@ -478,7 +520,7 @@ export default function PromptEditPage() {
                                 className="h-6 w-6 p-0"
                                 onClick={() =>
                                   copyToClipboard(
-                                    JSON.stringify(result.output, null, 2),
+                                    formatOutput(result.output),
                                     'Output'
                                   )
                                 }
@@ -496,8 +538,8 @@ export default function PromptEditPage() {
                             </div>
                             <div>
                               <p className="text-xs font-medium mb-1">Output:</p>
-                              <pre className="text-xs bg-muted p-2 rounded overflow-auto max-h-[200px] font-mono">
-                                {JSON.stringify(result.output, null, 2)}
+                              <pre className="text-xs bg-muted p-2 rounded overflow-auto max-h-[400px] whitespace-pre-wrap font-mono leading-relaxed">
+                                {formatOutput(result.output)}
                               </pre>
                             </div>
                           </CardContent>
