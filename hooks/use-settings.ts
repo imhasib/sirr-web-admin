@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { settingsService } from '@/services/settings.service';
+import { settingsService, TestPromptRequest } from '@/services/settings.service';
 import { UpdateSettingRequest } from '@/types';
 import { toast } from 'sonner';
 
@@ -55,5 +55,16 @@ export function usePromptSchemas() {
   return useQuery({
     queryKey: settingsKeys.promptSchemas(),
     queryFn: () => settingsService.getPromptSchemas(),
+  });
+}
+
+// Test prompt mutation
+export function useTestPrompt() {
+  return useMutation({
+    mutationFn: ({ endpoint, data }: { endpoint: string; data: TestPromptRequest }) =>
+      settingsService.testPrompt(endpoint, data),
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to test prompt');
+    },
   });
 }

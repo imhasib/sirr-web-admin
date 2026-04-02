@@ -1,6 +1,15 @@
 import apiClient from '@/lib/api-client';
 import { Setting, UpdateSettingRequest, PromptSchemasResponse } from '@/types';
 
+export interface TestPromptRequest {
+  input: string;
+}
+
+export interface TestPromptResponse {
+  output: any;
+  timestamp: string;
+}
+
 export const settingsService = {
   async getSettings(): Promise<Setting[]> {
     const response = await apiClient.get<Setting[]>('/admin/settings');
@@ -19,6 +28,11 @@ export const settingsService = {
 
   async getPromptSchemas(): Promise<PromptSchemasResponse> {
     const response = await apiClient.get<PromptSchemasResponse>('/admin/settings/prompt-schemas');
+    return response.data;
+  },
+
+  async testPrompt(endpoint: string, data: TestPromptRequest): Promise<TestPromptResponse> {
+    const response = await apiClient.post<TestPromptResponse>(endpoint, data);
     return response.data;
   },
 };

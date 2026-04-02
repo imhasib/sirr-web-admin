@@ -4,4 +4,3 @@ export { settingsService } from './settings.service';
 export { libraryService } from './library.service';
 export { therapistService } from './therapist.service';
 export { onboardingService } from './onboarding.service';
-export { aiReflectionService } from './ai-reflection.service';

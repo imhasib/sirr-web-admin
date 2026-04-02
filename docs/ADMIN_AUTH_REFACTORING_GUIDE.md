@@ -415,7 +415,6 @@ const { isAdmin, isLoading, isAuthenticated, user } = useRequireAdmin();
 - [x] `app/(dashboard)/admin/libraries/page.tsx`
 - [x] `app/(dashboard)/admin/therapists/page.tsx`
 - [x] `app/(dashboard)/admin/onboarding/page.tsx`
-- [x] `app/(dashboard)/admin/ai-reflection-test/page.tsx`
 - [x] `app/(dashboard)/settings/prompts/page.tsx`
 
 **New/Create Pages:**

@@ -34,9 +34,6 @@ export const ROUTES = {
   // Admin - Allah Names
   ADMIN_ALLAH_NAMES: '/admin/allah-names',
   ADMIN_ALLAH_NAMES_NEW: '/admin/allah-names/new',
-
-  // Admin - Other
-  ADMIN_AI_REFLECTION_TEST: '/admin/ai-reflection-test',
 } as const;
 
 /**

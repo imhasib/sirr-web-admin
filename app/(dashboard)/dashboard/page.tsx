@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { MessageSquareText, ChevronRight, BookOpen, Users, ClipboardList, Sparkles, BookText } from 'lucide-react';
+import { MessageSquareText, ChevronRight, BookOpen, Users, ClipboardList, BookText } from 'lucide-react';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { useAuthStore } from '@/stores/auth-store';
@@ -19,42 +19,6 @@ export default function DashboardPage() {
 
       {isAdmin && (
         <>
-          {/* AI Tools Section */}
-          <div className="grid gap-4 md:grid-cols-2">
-            <Card
-              className="hover:shadow-md transition-shadow cursor-pointer group"
-              onClick={() => router.push(ROUTES.PROMPT_SETTINGS)}
-            >
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="p-2 rounded-lg bg-muted text-muted-foreground">
-                    <MessageSquareText className="h-5 w-5" />
-                  </div>
-                  <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
-                </div>
-                <CardTitle>Prompt Settings</CardTitle>
-                <CardDescription>Manage AI prompts and output schemas</CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card
-              className="hover:shadow-md transition-shadow cursor-pointer group"
-              onClick={() => router.push(ROUTES.ADMIN_AI_REFLECTION_TEST)}
-            >
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="p-2 rounded-lg bg-muted text-muted-foreground">
-                    <Sparkles className="h-5 w-5" />
-                  </div>
-                  <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
-                </div>
-                <CardTitle>AI Reflection Test</CardTitle>
-                <CardDescription>Test AI reflection generation with prompts</CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
-
-          <Separator />
 
           {/* Content Management Section */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { MessageSquareText, Pencil, AlertCircle, ArrowLeft } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,28 +7,18 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { useSettings, usePromptSchemas } from '@/hooks/use-settings';
-import { EditSettingDialog } from '@/components/settings';
+import { useSettings } from '@/hooks/use-settings';
 import { RequireAdmin } from '@/components/auth';
-import { Setting, getSettingLabel } from '@/types';
+import { getSettingLabel } from '@/types';
 import { formatDateTime } from '@/lib/utils';
 import { ROUTES } from '@/lib/constants';
 
 export default function PromptSettingsPage() {
   const router = useRouter();
-  const { data: settings, isLoading: settingsLoading, error: settingsError } = useSettings();
-  const { data: promptSchemas, isLoading: schemasLoading } = usePromptSchemas();
-  const [editingSetting, setEditingSetting] = useState<Setting | null>(null);
-
-  const isLoading = settingsLoading || schemasLoading;
+  const { data: settings, isLoading, error: settingsError } = useSettings();
 
   // Filter only prompt-related settings
   const promptSettings = settings?.filter((s) => s.key.startsWith('SYSTEM_PROMPT_')) || [];
-
-  // Get output schema for the currently editing setting
-  const getOutputSchema = (key: string): string | undefined => {
-    return promptSchemas?.schemas?.[key];
-  };
 
   if (isLoading) {
     return (
@@ -128,7 +117,7 @@ export default function PromptSettingsPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setEditingSetting(setting)}
+                onClick={() => router.push(`${ROUTES.PROMPT_SETTINGS}/${setting.key}`)}
               >
                 <Pencil className="h-4 w-4 mr-1" />
                 Edit
@@ -159,14 +148,7 @@ export default function PromptSettingsPage() {
           </Card>
         )}
       </div>
-
-        <EditSettingDialog
-          setting={editingSetting}
-          open={!!editingSetting}
-          onOpenChange={(open) => !open && setEditingSetting(null)}
-          outputSchema={editingSetting ? getOutputSchema(editingSetting.key) : undefined}
-        />
-      </div>
+    </div>
     </RequireAdmin>
   );
 }
