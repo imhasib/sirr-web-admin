@@ -25,7 +25,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Setting, getSettingLabel } from '@/types';
+import { Setting } from '@/types';
 import { useUpdateSetting } from '@/hooks/use-settings';
 import { formatDateTime } from '@/lib/utils';
 
@@ -82,7 +82,7 @@ export function EditSettingDialog({ setting, open, onOpenChange, outputSchema }:
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Edit {getSettingLabel(setting.key)}</DialogTitle>
+            <DialogTitle>Edit {setting.label}</DialogTitle>
             <DialogDescription>
               Last updated: {formatDateTime(setting.updatedAt)}
             </DialogDescription>

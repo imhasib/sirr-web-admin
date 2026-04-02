@@ -11,7 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useSetting, useUpdateSetting, useTestPrompt } from '@/hooks/use-settings';
 import { getPromptTestConfig, hasTestEndpoint } from '@/config/prompt-mappings';
-import { SETTING_LABELS, PromptSetting } from '@/types/setting';
+import { PromptSetting } from '@/types/setting';
 import { ROUTES } from '@/lib/constants';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -43,8 +43,8 @@ export default function PromptEditPage() {
   const [isSaving, setIsSaving] = useState(false);
 
   // Get configuration
-  const promptLabel = SETTING_LABELS[key] || key;
   const promptSetting = setting as PromptSetting | undefined;
+  const promptLabel = promptSetting?.label || key;
   const outputSchema = promptSetting?.outputSchema || '';
   const testConfig = getPromptTestConfig(key);
   const showTestSection = hasTestEndpoint(key);

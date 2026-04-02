@@ -9,7 +9,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useSettings } from '@/hooks/use-settings';
 import { RequireAdmin } from '@/components/auth';
-import { getSettingLabel } from '@/types';
 import { formatDateTime } from '@/lib/utils';
 import { ROUTES } from '@/lib/constants';
 
@@ -18,7 +17,7 @@ export default function PromptSettingsPage() {
   const { data: settings, isLoading, error: settingsError } = useSettings();
 
   // Filter only prompt-related settings
-  const promptSettings = settings?.filter((s) => s.key.startsWith('SYSTEM_PROMPT_')) || [];
+  const promptSettings = settings?.filter((s) => s.category === 'system_prompt') || [];
 
   if (isLoading) {
     return (
@@ -109,7 +108,7 @@ export default function PromptSettingsPage() {
             <CardHeader className="flex flex-row items-start justify-between space-y-0">
               <div className="space-y-1">
                 <CardTitle className="text-lg flex items-center gap-2">
-                  {getSettingLabel(setting.key)}
+                  {setting.label}
                   <Badge variant="outline" className="text-xs font-normal">
                     {setting.type}
                   </Badge>
