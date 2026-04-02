@@ -16,6 +16,7 @@ import { ROUTES } from '@/lib/constants';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { RequireAdmin } from '@/components/auth';
+import { Input } from '@/components/ui/input';
 
 interface TestResult {
   timestamp: string;
@@ -42,12 +43,46 @@ export default function PromptEditPage() {
   const [testResults, setTestResults] = useState<TestResult[]>([]);
   const [isSaving, setIsSaving] = useState(false);
 
+  // Allah insights specific state
+  const [allahName, setAllahName] = useState('');
+  const [allahMeaning, setAllahMeaning] = useState('');
+  const [journalEntry1, setJournalEntry1] = useState('');
+  const [journalEntry2, setJournalEntry2] = useState('');
+
   // Get configuration
   const promptSetting = setting as PromptSetting | undefined;
   const promptLabel = promptSetting?.label || key;
   const outputSchema = promptSetting?.outputSchema || '';
   const testConfig = getPromptTestConfig(key);
   const showTestSection = hasTestEndpoint(key);
+
+  // Sample inputs for different prompt types
+  const getSampleInput = () => {
+    if (!testConfig) return '';
+
+    switch (testConfig.inputType) {
+      case 'partial-entry':
+        return 'I felt so grateful today when my friend helped me through a difficult time';
+      case 'main-reflection':
+        return 'Today I felt overwhelmed by my responsibilities at work and home. I\'m struggling to find balance.';
+      default:
+        return '';
+    }
+  };
+
+  // Initialize sample inputs based on prompt type
+  useEffect(() => {
+    if (testConfig) {
+      if (testConfig.inputType === 'partial-entry' || testConfig.inputType === 'main-reflection') {
+        setTestInput(getSampleInput());
+      } else if (testConfig.inputType === 'allah-insights') {
+        setAllahName('Ar-Rahman');
+        setAllahMeaning('The Most Merciful');
+        setJournalEntry1('Today I struggled with forgiving myself for past mistakes');
+        setJournalEntry2('I felt Allah\'s mercy when I made dua after Fajr');
+      }
+    }
+  }, [key, testConfig]);
 
   // Load draft from localStorage
   useEffect(() => {
@@ -113,20 +148,53 @@ export default function PromptEditPage() {
   };
 
   const handleTest = async () => {
-    if (!testConfig || !testInput.trim()) {
-      toast.error('Please enter test input');
+    if (!testConfig) {
+      toast.error('Test configuration not found');
       return;
     }
 
+    // Validate inputs based on input type
+    if (testConfig.inputType === 'partial-entry' || testConfig.inputType === 'main-reflection') {
+      if (!testInput.trim()) {
+        toast.error('Please enter test input');
+        return;
+      }
+    } else if (testConfig.inputType === 'allah-insights') {
+      if (!allahName.trim() || !allahMeaning.trim() || (!journalEntry1.trim() && !journalEntry2.trim())) {
+        toast.error('Please fill in all required fields (Allah Name, Meaning, and at least one journal entry)');
+        return;
+      }
+    }
+
     try {
+      // Build request data based on input type
+      let requestData: any;
+      let inputSummary: string;
+
+      if (testConfig.inputType === 'partial-entry') {
+        requestData = { partialEntry: testInput };
+        inputSummary = testInput;
+      } else if (testConfig.inputType === 'main-reflection') {
+        requestData = { prompt: testInput };
+        inputSummary = testInput;
+      } else if (testConfig.inputType === 'allah-insights') {
+        const journalEntries = [journalEntry1, journalEntry2].filter(entry => entry.trim());
+        requestData = {
+          allahName,
+          allahMeaning,
+          journalEntries,
+        };
+        inputSummary = `${allahName} (${allahMeaning}) - ${journalEntries.length} entries`;
+      }
+
       const result = await testMutation.mutateAsync({
         endpoint: testConfig.testEndpoint,
-        data: { input: testInput },
+        data: requestData,
       });
 
       const newResult: TestResult = {
         timestamp: result.timestamp || new Date().toISOString(),
-        input: testInput,
+        input: inputSummary,
         output: result.output,
       };
 
@@ -307,21 +375,74 @@ export default function PromptEditPage() {
                   </Alert>
                 )}
 
-                {/* Test Input */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Test Input</label>
-                  <Textarea
-                    value={testInput}
-                    onChange={(e) => setTestInput(e.target.value)}
-                    placeholder="Enter test input (plain text)..."
-                    className="min-h-[120px] font-mono text-sm resize-none"
-                    disabled={hasChanges}
-                  />
-                </div>
+                {/* Test Input - Partial Entry & Main Reflection (both use simple text input) */}
+                {(testConfig.inputType === 'partial-entry' || testConfig.inputType === 'main-reflection') && (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Test Input (Sample provided - edit as needed)</label>
+                    <Textarea
+                      value={testInput}
+                      onChange={(e) => setTestInput(e.target.value)}
+                      placeholder="Enter test input (plain text)..."
+                      className="min-h-[120px] font-mono text-sm resize-none"
+                      disabled={hasChanges}
+                    />
+                  </div>
+                )}
+
+                {/* Test Input - Allah Insights */}
+                {testConfig.inputType === 'allah-insights' && (
+                  <div className="space-y-4">
+                    <p className="text-xs text-muted-foreground">Sample data provided - edit as needed</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Allah Name</label>
+                        <Input
+                          type="text"
+                          value={allahName}
+                          onChange={(e) => setAllahName(e.target.value)}
+                          placeholder="e.g., Ar-Rahman"
+                          className="text-sm"
+                          disabled={hasChanges}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Allah Meaning</label>
+                        <Input
+                          type="text"
+                          value={allahMeaning}
+                          onChange={(e) => setAllahMeaning(e.target.value)}
+                          placeholder="e.g., The Most Merciful"
+                          className="text-sm"
+                          disabled={hasChanges}
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Journal Entry 1</label>
+                      <Textarea
+                        value={journalEntry1}
+                        onChange={(e) => setJournalEntry1(e.target.value)}
+                        placeholder="Enter first journal entry..."
+                        className="min-h-[80px] font-mono text-sm resize-none"
+                        disabled={hasChanges}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Journal Entry 2 (Optional)</label>
+                      <Textarea
+                        value={journalEntry2}
+                        onChange={(e) => setJournalEntry2(e.target.value)}
+                        placeholder="Enter second journal entry..."
+                        className="min-h-[80px] font-mono text-sm resize-none"
+                        disabled={hasChanges}
+                      />
+                    </div>
+                  </div>
+                )}
 
                 <Button
                   onClick={handleTest}
-                  disabled={hasChanges || !testInput.trim() || testMutation.isPending}
+                  disabled={hasChanges || testMutation.isPending}
                   className="w-full sm:w-auto"
                   size="sm"
                 >

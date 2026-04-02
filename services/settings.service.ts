@@ -1,9 +1,25 @@
 import apiClient from '@/lib/api-client';
 import { Setting, UpdateSettingRequest } from '@/types';
 
+// Test request for partial entry prompts (detect-emotions-tags, help-me-reflect)
 export interface TestPromptRequest {
-  input: string;
+  partialEntry: string;
 }
+
+// Test request for main reflection prompt
+export interface TestMainReflectionRequest {
+  prompt: string;
+}
+
+// Test request for Allah insights prompt
+export interface TestAllahInsightsRequest {
+  allahName: string;
+  allahMeaning: string;
+  journalEntries: string[];
+}
+
+// Union type for all possible test requests
+export type AnyTestPromptRequest = TestPromptRequest | TestMainReflectionRequest | TestAllahInsightsRequest;
 
 export interface TestPromptResponse {
   output: any;
@@ -26,7 +42,7 @@ export const settingsService = {
     return response.data;
   },
 
-  async testPrompt(endpoint: string, data: TestPromptRequest): Promise<TestPromptResponse> {
+  async testPrompt(endpoint: string, data: AnyTestPromptRequest): Promise<TestPromptResponse> {
     const response = await apiClient.post<TestPromptResponse>(endpoint, data);
     return response.data;
   },

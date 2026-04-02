@@ -2,9 +2,12 @@
  * Prompt configuration mappings for test endpoints and schemas
  */
 
+export type PromptInputType = 'partial-entry' | 'main-reflection' | 'allah-insights';
+
 export interface PromptConfig {
   testEndpoint: string;
   description: string;
+  inputType: PromptInputType;
 }
 
 /**
@@ -15,18 +18,22 @@ export const PROMPT_TEST_CONFIG: Record<string, PromptConfig> = {
   SYSTEM_PROMPT_MAIN_REFLECTION: {
     testEndpoint: '/admin/prompts/test/main-reflection',
     description: 'Test full reflection generation',
+    inputType: 'main-reflection',
   },
   SYSTEM_PROMPT_HELP_ME_REFLECT: {
     testEndpoint: '/admin/prompts/test/help-me-reflect',
     description: 'Test reflection question generation',
+    inputType: 'partial-entry',
   },
   SYSTEM_PROMPT_DETECT_EMOTIONS_TAGS: {
     testEndpoint: '/admin/prompts/test/detect-emotions-tags',
     description: 'Test emotion/tag detection',
+    inputType: 'partial-entry',
   },
   SYSTEM_PROMPT_ALLAH_PERSONALIZED_INSIGHTS: {
     testEndpoint: '/admin/prompts/test/allah-personalized-insights',
     description: 'Test Allah insights generation',
+    inputType: 'allah-insights',
   },
 };
 
