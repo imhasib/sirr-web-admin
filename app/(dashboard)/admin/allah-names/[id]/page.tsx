@@ -1,46 +1,25 @@
 'use client';
 
-import { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { Pencil, Trash2, Ban, Book } from 'lucide-react';
-import {
-  useAllahName,
-  useDeactivateAllahName,
-  useDeleteAllahName,
-} from '@/hooks/use-allah-names';
+import { useParams } from 'next/navigation';
+import { Pencil, Book } from 'lucide-react';
+import { useAllahName } from '@/hooks/use-allah-names';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
-import { PageHeader, ConfirmDialog } from '@/components/common';
+import { PageHeader } from '@/components/common';
 import { RequireAdmin } from '@/components/auth';
 import { formatDateTime } from '@/lib/utils';
 import Link from 'next/link';
 
 export default function AllahNameDetailPage() {
   const params = useParams();
-  const router = useRouter();
   const id = params.id as string;
 
   const { data, isLoading, error } = useAllahName(id);
-  const deactivateAllahName = useDeactivateAllahName();
-  const deleteAllahName = useDeleteAllahName();
-
-  const [showDeactivateDialog, setShowDeactivateDialog] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const allahName = data;
-
-  const handleDeactivate = async () => {
-    await deactivateAllahName.mutateAsync(id);
-    setShowDeactivateDialog(false);
-  };
-
-  const handleDelete = async () => {
-    await deleteAllahName.mutateAsync(id);
-    router.push('/admin/allah-names');
-  };
 
   if (isLoading) {
     return (
@@ -80,24 +59,12 @@ export default function AllahNameDetailPage() {
           description={allahName.meaning}
           backHref="/admin/allah-names"
           actions={
-            <div className="flex items-center gap-2">
-              <Button variant="outline" asChild>
-                <Link href={`/admin/allah-names/${id}/edit`}>
-                  <Pencil className="mr-2 h-4 w-4" />
-                  Edit
-                </Link>
-              </Button>
-              {allahName.isActive && (
-                <Button variant="outline" onClick={() => setShowDeactivateDialog(true)}>
-                  <Ban className="mr-2 h-4 w-4" />
-                  Deactivate
-                </Button>
-              )}
-              <Button variant="destructive" onClick={() => setShowDeleteDialog(true)}>
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete
-              </Button>
-            </div>
+            <Button variant="outline" asChild>
+              <Link href={`/admin/allah-names/${id}/edit`}>
+                <Pencil className="mr-2 h-4 w-4" />
+                Edit
+              </Link>
+            </Button>
           }
         />
 
@@ -122,13 +89,6 @@ export default function AllahNameDetailPage() {
               <div>
                 <p className="text-sm text-muted-foreground mb-1">Meaning</p>
                 <p className="text-lg">{allahName.meaning}</p>
-              </div>
-
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">Status</p>
-                <Badge variant={allahName.isActive ? 'default' : 'secondary'}>
-                  {allahName.isActive ? 'Active' : 'Inactive'}
-                </Badge>
               </div>
             </CardContent>
           </Card>
@@ -186,28 +146,6 @@ export default function AllahNameDetailPage() {
             </div>
           </CardContent>
         </Card>
-
-        <ConfirmDialog
-          open={showDeactivateDialog}
-          onOpenChange={setShowDeactivateDialog}
-          title="Deactivate Allah Name"
-          description={`Are you sure you want to deactivate "${allahName.transliteration}"? This will hide it from users but you can reactivate it later.`}
-          confirmText="Deactivate"
-          onConfirm={handleDeactivate}
-          isDestructive={false}
-          isLoading={deactivateAllahName.isPending}
-        />
-
-        <ConfirmDialog
-          open={showDeleteDialog}
-          onOpenChange={setShowDeleteDialog}
-          title="Delete Allah Name Permanently"
-          description={`Are you sure you want to permanently delete "${allahName.transliteration}"? This action cannot be undone.`}
-          confirmText="Delete Permanently"
-          onConfirm={handleDelete}
-          isDestructive
-          isLoading={deleteAllahName.isPending}
-        />
       </div>
     </RequireAdmin>
   );
