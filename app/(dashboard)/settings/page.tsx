@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Settings, MessageSquareText, AlertCircle, ChevronRight, User, KeyRound } from 'lucide-react';
+import { Settings, MessageSquareText, AlertCircle, ChevronRight, User, KeyRound, Cog } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -35,20 +35,19 @@ const USER_SETTING_CATEGORIES: SettingCategory[] = [
 
 const ADMIN_SETTING_CATEGORIES: SettingCategory[] = [
   {
+    id: 'general',
+    title: 'General Settings',
+    description: 'Configure general application settings and parameters',
+    icon: <Cog className="h-6 w-6" />,
+    href: ROUTES.GENERAL_SETTINGS,
+  },
+  {
     id: 'prompts',
     title: 'Prompt Settings',
     description: 'Manage system prompts and their output schemas for AI interactions',
     icon: <MessageSquareText className="h-6 w-6" />,
     href: ROUTES.PROMPT_SETTINGS,
   },
-  // Future categories can be added here:
-  // {
-  //   id: 'general',
-  //   title: 'General Settings',
-  //   description: 'Configure general application settings',
-  //   icon: <Cog className="h-6 w-6" />,
-  //   href: ROUTES.GENERAL_SETTINGS,
-  // },
 ];
 
 export default function SettingsPage() {

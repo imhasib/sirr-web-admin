@@ -16,6 +16,7 @@ export const ROUTES = {
   DASHBOARD: '/dashboard',
   SETTINGS: '/settings',
   PROMPT_SETTINGS: '/settings/prompts',
+  GENERAL_SETTINGS: '/settings/general',
   PROFILE_SETTINGS: '/settings/profile',
   PASSWORD_SETTINGS: '/settings/password',
 
