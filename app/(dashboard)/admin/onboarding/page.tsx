@@ -10,6 +10,7 @@ import {
   CheckCircle,
   XCircle,
   ClipboardList,
+  ArrowLeft,
 } from 'lucide-react';
 import { useOnboardingQuestions, useDeleteOnboardingQuestion } from '@/hooks/use-onboarding';
 import { OnboardingQuestion } from '@/types';
@@ -22,6 +23,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader, ConfirmDialog, EmptyState } from '@/components/common';
 import { RequireAdmin } from '@/components/auth';
 import { formatDateTime } from '@/lib/utils';
+import { ROUTES } from '@/lib/constants';
 import Link from 'next/link';
 
 export default function OnboardingListPage() {
@@ -50,18 +52,23 @@ export default function OnboardingListPage() {
   return (
     <RequireAdmin pageTitle="Onboarding Questions">
     <div className="space-y-6">
-      <PageHeader
-        title="Onboarding Questions"
-        description="Manage onboarding questions and options"
-        actions={
-          <Button asChild>
-            <Link href="/admin/onboarding/new">
-              <Plus className="mr-2 h-4 w-4" />
-              Add Question
-            </Link>
-          </Button>
-        }
-      />
+      <div className="flex items-center gap-4">
+        <Button variant="ghost" size="icon" onClick={() => router.push(ROUTES.DASHBOARD)}>
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <PageHeader
+          title="Onboarding Questions"
+          description="Manage onboarding questions and options"
+          actions={
+            <Button asChild>
+              <Link href="/admin/onboarding/new">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Question
+              </Link>
+            </Button>
+          }
+        />
+      </div>
 
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-sm">

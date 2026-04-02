@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, Book } from 'lucide-react';
+import { Plus, Book, ArrowLeft } from 'lucide-react';
 import {
   useAllahNames,
   useDeactivateAllahName,
@@ -23,6 +23,7 @@ import {
 import { DataTable, PageHeader, EmptyState, ConfirmDialog } from '@/components/common';
 import { RequireAdmin } from '@/components/auth';
 import { createColumns } from './columns';
+import { ROUTES } from '@/lib/constants';
 import Link from 'next/link';
 
 export default function AllahNamesPage() {
@@ -99,18 +100,23 @@ export default function AllahNamesPage() {
       pageDescription="Manage Allah's 99 Beautiful Names"
     >
       <div className="space-y-6">
-        <PageHeader
-          title="Allah Names Management"
-          description="Manage Allah's 99 Beautiful Names with Quranic references"
-          actions={
-            <Button asChild>
-              <Link href="/admin/allah-names/new">
-                <Plus className="mr-2 h-4 w-4" />
-                Add Allah Name
-              </Link>
-            </Button>
-          }
-        />
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={() => router.push(ROUTES.DASHBOARD)}>
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <PageHeader
+            title="Allah Names Management"
+            description="Manage Allah's 99 Beautiful Names with Quranic references"
+            actions={
+              <Button asChild>
+                <Link href="/admin/allah-names/new">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Allah Name
+                </Link>
+              </Button>
+            }
+          />
+        </div>
 
         {isLoading ? (
           <Card>

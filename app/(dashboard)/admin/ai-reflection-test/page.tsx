@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -20,7 +21,8 @@ import {
 } from '@/components/ui/form';
 import { PageHeader } from '@/components/common';
 import { RequireAdmin } from '@/components/auth';
-import { Loader2, Sparkles, BookOpen, Eye, Lightbulb, Star } from 'lucide-react';
+import { Loader2, Sparkles, BookOpen, Eye, Lightbulb, Star, ArrowLeft } from 'lucide-react';
+import { ROUTES } from '@/lib/constants';
 
 const promptSchema = z.object({
   prompt: z
@@ -32,6 +34,7 @@ const promptSchema = z.object({
 type PromptFormValues = z.infer<typeof promptSchema>;
 
 export default function AIReflectionTestPage() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [response, setResponse] = useState<AIReflectionResponse | null>(null);
@@ -70,10 +73,15 @@ export default function AIReflectionTestPage() {
   return (
     <RequireAdmin pageTitle="AI Reflection Test">
     <div className="space-y-6">
-      <PageHeader
-        title="AI Reflection Test"
-        description="Test AI reflection generation with custom journal prompts"
-      />
+      <div className="flex items-center gap-4">
+        <Button variant="ghost" size="icon" onClick={() => router.push(ROUTES.DASHBOARD)}>
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <PageHeader
+          title="AI Reflection Test"
+          description="Test AI reflection generation with custom journal prompts"
+        />
+      </div>
 
       <Card>
         <CardHeader>

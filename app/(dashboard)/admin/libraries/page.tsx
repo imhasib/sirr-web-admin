@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, BookOpen } from 'lucide-react';
+import { Plus, BookOpen, ArrowLeft } from 'lucide-react';
 import { useLibraries, useDeleteLibrary } from '@/hooks/use-libraries';
 import { Library } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { DataTable, PageHeader, EmptyState, ConfirmDialog } from '@/components/common';
 import { RequireAdmin } from '@/components/auth';
 import { createColumns } from './columns';
+import { ROUTES } from '@/lib/constants';
 import Link from 'next/link';
 
 export default function LibrariesPage() {
@@ -64,18 +65,23 @@ export default function LibrariesPage() {
       pageDescription="Manage library resources"
     >
       <div className="space-y-6">
-        <PageHeader
-          title="Library Management"
-          description="Manage library resources and content"
-          actions={
-            <Button asChild>
-              <Link href="/admin/libraries/new">
-                <Plus className="mr-2 h-4 w-4" />
-                Add Library
-              </Link>
-            </Button>
-          }
-        />
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={() => router.push(ROUTES.DASHBOARD)}>
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <PageHeader
+            title="Library Management"
+            description="Manage library resources and content"
+            actions={
+              <Button asChild>
+                <Link href="/admin/libraries/new">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add Library
+                </Link>
+              </Button>
+            }
+          />
+        </div>
 
       {isLoading ? (
         <Card>
