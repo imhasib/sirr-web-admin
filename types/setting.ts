@@ -21,6 +21,7 @@ export const SETTING_LABELS: Record<string, string> = {
   SYSTEM_PROMPT_MAIN_REFLECTION: 'Soul Mirror Reflection Prompt',
   SYSTEM_PROMPT_HELP_ME_REFLECT: 'Help Me Reflect Prompt',
   SYSTEM_PROMPT_DETECT_EMOTIONS_TAGS: 'Emotion & Tag Detection Prompt',
+  SYSTEM_PROMPT_ALLAH_PERSONALIZED_INSIGHTS: 'Allah Personalized Insights Prompt',
 };
 
 // Get friendly label for a setting key

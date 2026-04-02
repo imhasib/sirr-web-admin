@@ -108,6 +108,39 @@ export const createOnboardingQuestionSchema = onboardingQuestionSchema.required(
 export const editOnboardingQuestionSchema = onboardingQuestionSchema.omit({ slug: true }).required({ isActive: true });
 
 // ============================================================================
+// Allah Names Schemas
+// ============================================================================
+
+export const quranicReferenceSchema = z.object({
+  verse: z.string().min(1, 'Verse is required'),
+  surah: z.string().min(1, 'Surah is required'),
+  number: z.string().min(1, 'Reference number is required'),
+});
+
+export const allahNameSchema = z.object({
+  transliteration: z
+    .string()
+    .min(2, 'Transliteration must be at least 2 characters')
+    .max(100, 'Transliteration must be less than 100 characters'),
+  arabic: z
+    .string()
+    .min(2, 'Arabic text must be at least 2 characters')
+    .max(100, 'Arabic text must be less than 100 characters'),
+  meaning: z
+    .string()
+    .min(2, 'Meaning must be at least 2 characters')
+    .max(200, 'Meaning must be less than 200 characters'),
+  intro: z
+    .string()
+    .min(10, 'Introduction must be at least 10 characters')
+    .max(5000, 'Introduction must be less than 5000 characters'),
+  quranicReferences: z
+    .array(quranicReferenceSchema)
+    .optional()
+    .default([]),
+});
+
+// ============================================================================
 // Type Exports
 // ============================================================================
 
@@ -121,3 +154,5 @@ export type OnboardingOptionFormData = z.infer<typeof onboardingOptionSchema>;
 export type OnboardingQuestionFormData = z.infer<typeof onboardingQuestionSchema>;
 export type CreateOnboardingQuestionFormData = z.infer<typeof createOnboardingQuestionSchema>;
 export type EditOnboardingQuestionFormData = z.infer<typeof editOnboardingQuestionSchema>;
+export type QuranicReferenceFormData = z.infer<typeof quranicReferenceSchema>;
+export type AllahNameFormData = z.infer<typeof allahNameSchema>;

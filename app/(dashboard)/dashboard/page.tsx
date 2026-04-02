@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { MessageSquareText, ChevronRight, BookOpen, Users, ClipboardList, Sparkles } from 'lucide-react';
+import { MessageSquareText, ChevronRight, BookOpen, Users, ClipboardList, Sparkles, BookText } from 'lucide-react';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { useAuthStore } from '@/stores/auth-store';
@@ -57,7 +57,7 @@ export default function DashboardPage() {
           <Separator />
 
           {/* Content Management Section */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card
               className="hover:shadow-md transition-shadow cursor-pointer group"
               onClick={() => router.push(ROUTES.ADMIN_LIBRARIES)}
@@ -103,6 +103,22 @@ export default function DashboardPage() {
                 </div>
                 <CardTitle>Onboarding Questions</CardTitle>
                 <CardDescription>Manage user onboarding flow</CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card
+              className="hover:shadow-md transition-shadow cursor-pointer group"
+              onClick={() => router.push(ROUTES.ADMIN_ALLAH_NAMES)}
+            >
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="p-2 rounded-lg bg-muted text-muted-foreground">
+                    <BookText className="h-5 w-5" />
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                </div>
+                <CardTitle>Allah Names Management</CardTitle>
+                <CardDescription>Manage Allah's 99 Beautiful Names</CardDescription>
               </CardHeader>
             </Card>
           </div>

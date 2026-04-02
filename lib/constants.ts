@@ -31,6 +31,10 @@ export const ROUTES = {
   ADMIN_ONBOARDING: '/admin/onboarding',
   ADMIN_ONBOARDING_NEW: '/admin/onboarding/new',
 
+  // Admin - Allah Names
+  ADMIN_ALLAH_NAMES: '/admin/allah-names',
+  ADMIN_ALLAH_NAMES_NEW: '/admin/allah-names/new',
+
   // Admin - Other
   ADMIN_AI_REFLECTION_TEST: '/admin/ai-reflection-test',
 } as const;
@@ -51,6 +55,10 @@ export const DYNAMIC_ROUTES = {
   // Onboarding routes
   adminOnboardingDetail: (slug: string) => `/admin/onboarding/${slug}`,
   adminOnboardingEdit: (slug: string) => `/admin/onboarding/${slug}/edit`,
+
+  // Allah Names routes
+  adminAllahNameDetail: (id: string) => `/admin/allah-names/${id}`,
+  adminAllahNameEdit: (id: string) => `/admin/allah-names/${id}/edit`,
 } as const;
 
 export const PUBLIC_ROUTES = [
