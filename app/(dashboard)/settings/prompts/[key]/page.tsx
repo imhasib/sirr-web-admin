@@ -152,11 +152,11 @@ export default function PromptEditPage() {
   if (isLoading) {
     return (
       <RequireAdmin>
-        <div className="container mx-auto py-8 space-y-6">
-          <Skeleton className="h-12 w-full" />
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <Skeleton className="h-96 lg:col-span-2" />
-            <Skeleton className="h-96" />
+        <div className="container mx-auto py-6 space-y-4">
+          <Skeleton className="h-10 w-full" />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <Skeleton className="h-[350px] lg:col-span-2" />
+            <Skeleton className="h-[350px]" />
           </div>
         </div>
       </RequireAdmin>
@@ -166,13 +166,13 @@ export default function PromptEditPage() {
   if (error || !setting) {
     return (
       <RequireAdmin>
-        <div className="container mx-auto py-8">
+        <div className="container mx-auto py-6">
           <Alert variant="destructive">
             <AlertDescription>
               {error instanceof Error ? error.message : 'Failed to load prompt setting'}
             </AlertDescription>
           </Alert>
-          <Button className="mt-4" onClick={() => router.push(ROUTES.PROMPT_SETTINGS)}>
+          <Button className="mt-4" size="sm" onClick={() => router.push(ROUTES.PROMPT_SETTINGS)}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Prompts
           </Button>
@@ -183,49 +183,30 @@ export default function PromptEditPage() {
 
   return (
     <RequireAdmin>
-      <div className="container mx-auto py-8 space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => router.push(ROUTES.PROMPT_SETTINGS)}
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back
-              </Button>
-            </div>
-            <h1 className="text-3xl font-bold tracking-tight">{promptLabel}</h1>
-            <p className="text-sm text-muted-foreground">{key}</p>
-          </div>
+      <div className="container mx-auto py-6 space-y-4">
+        {/* Compact Header */}
+        <div className="flex items-start gap-3">
           <Button
-            onClick={handleUpdate}
-            disabled={!hasChanges || isSaving}
-            className="min-w-[120px]"
+            variant="ghost"
+            size="icon"
+            onClick={() => router.push(ROUTES.PROMPT_SETTINGS)}
+            className="mt-1"
           >
-            <Save className="h-4 w-4 mr-2" />
-            {isSaving ? 'Saving...' : 'Update'}
+            <ArrowLeft className="h-4 w-4" />
           </Button>
+          <div className="flex-1">
+            <h1 className="text-2xl font-bold tracking-tight">{promptLabel}</h1>
+            <p className="text-xs text-muted-foreground mt-0.5">{key}</p>
+          </div>
         </div>
 
-        {/* Warning Alert */}
-        {hasChanges && (
-          <Alert>
-            <AlertDescription>
-              You have unsaved changes. Click Update to save your changes.
-            </AlertDescription>
-          </Alert>
-        )}
-
         {/* Main Content: Prompt Editor and Output Schema */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Prompt Content (2/3 on desktop) */}
           <Card className="lg:col-span-2">
-            <CardHeader>
+            <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle>Prompt Content</CardTitle>
+                <CardTitle className="text-base">Prompt Content</CardTitle>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -235,28 +216,45 @@ export default function PromptEditPage() {
                   Copy
                 </Button>
               </div>
-              <CardDescription>
+              <CardDescription className="text-xs">
                 Edit the prompt instructions. The output schema is automatically appended.
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-3">
               <Textarea
                 value={promptValue}
                 onChange={(e) => setPromptValue(e.target.value)}
-                className="min-h-[500px] font-mono text-sm"
+                className="h-[250px] font-mono text-sm resize-y"
                 placeholder="Enter prompt content..."
               />
-              <div className="mt-2 text-sm text-muted-foreground text-right">
-                {promptValue.length} characters
+              <div className="flex items-center justify-between">
+                <div className="text-xs text-muted-foreground">
+                  {promptValue.length} characters
+                </div>
+                <Button
+                  onClick={handleUpdate}
+                  disabled={!hasChanges || isSaving}
+                  size="sm"
+                >
+                  <Save className="h-4 w-4 mr-2" />
+                  {isSaving ? 'Saving...' : 'Update Prompt'}
+                </Button>
               </div>
+              {hasChanges && (
+                <Alert className="py-2">
+                  <AlertDescription className="text-xs">
+                    You have unsaved changes. Click "Update Prompt" to save your changes.
+                  </AlertDescription>
+                </Alert>
+              )}
             </CardContent>
           </Card>
 
           {/* Output Schema (1/3 on desktop) */}
           <Card>
-            <CardHeader>
+            <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle>Output Schema</CardTitle>
+                <CardTitle className="text-base">Output Schema</CardTitle>
                 {outputSchema && (
                   <Button
                     variant="ghost"
@@ -268,14 +266,14 @@ export default function PromptEditPage() {
                   </Button>
                 )}
               </div>
-              <CardDescription>Expected output format (read-only)</CardDescription>
+              <CardDescription className="text-xs">Expected output format (read-only)</CardDescription>
             </CardHeader>
             <CardContent>
               {outputSchema ? (
                 <Textarea
                   value={outputSchema}
                   readOnly
-                  className="min-h-[500px] font-mono text-sm bg-muted"
+                  className="h-[250px] font-mono text-sm bg-muted resize-y"
                 />
               ) : (
                 <div className="text-sm text-muted-foreground">
@@ -289,17 +287,26 @@ export default function PromptEditPage() {
         {/* Test Section */}
         {showTestSection && testConfig && (
           <>
-            <Separator className="my-8" />
+            <Separator className="my-6" />
 
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base">
                   <TestTube2 className="h-5 w-5" />
                   Test Prompt
                 </CardTitle>
-                <CardDescription>{testConfig.description}</CardDescription>
+                <CardDescription className="text-xs">{testConfig.description}</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-4">
+                {/* Disabled State Warning */}
+                {hasChanges && (
+                  <Alert variant="destructive" className="py-2">
+                    <AlertDescription className="text-xs">
+                      <strong>Testing Disabled:</strong> You have unsaved changes to the prompt. Please save your changes first to ensure accurate test results with the updated prompt.
+                    </AlertDescription>
+                  </Alert>
+                )}
+
                 {/* Test Input */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Test Input</label>
@@ -307,14 +314,16 @@ export default function PromptEditPage() {
                     value={testInput}
                     onChange={(e) => setTestInput(e.target.value)}
                     placeholder="Enter test input (plain text)..."
-                    className="min-h-[120px] font-mono text-sm"
+                    className="min-h-[120px] font-mono text-sm resize-none"
+                    disabled={hasChanges}
                   />
                 </div>
 
                 <Button
                   onClick={handleTest}
-                  disabled={!testInput.trim() || testMutation.isPending}
+                  disabled={hasChanges || !testInput.trim() || testMutation.isPending}
                   className="w-full sm:w-auto"
+                  size="sm"
                 >
                   <TestTube2 className="h-4 w-4 mr-2" />
                   {testMutation.isPending ? 'Testing...' : 'Test Prompt'}
@@ -322,7 +331,7 @@ export default function PromptEditPage() {
 
                 {/* Test Results History */}
                 {testResults.length > 0 && (
-                  <div className="space-y-4 mt-6">
+                  <div className="space-y-3 mt-4">
                     <div className="flex items-center justify-between">
                       <h3 className="text-sm font-medium">Test Results History</h3>
                       <span className="text-xs text-muted-foreground">
@@ -330,10 +339,10 @@ export default function PromptEditPage() {
                       </span>
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       {testResults.map((result, index) => (
-                        <Card key={result.timestamp} className={cn(index === 0 && 'border-primary')}>
-                          <CardHeader className="pb-3">
+                        <Card key={result.timestamp} className={cn(index === 0 && 'border-primary', 'shadow-sm')}>
+                          <CardHeader className="pb-2 pt-3">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                                 <Clock className="h-3 w-3" />
@@ -345,6 +354,7 @@ export default function PromptEditPage() {
                               <Button
                                 variant="ghost"
                                 size="sm"
+                                className="h-6 w-6 p-0"
                                 onClick={() =>
                                   copyToClipboard(
                                     JSON.stringify(result.output, null, 2),
@@ -356,16 +366,16 @@ export default function PromptEditPage() {
                               </Button>
                             </div>
                           </CardHeader>
-                          <CardContent className="space-y-3">
+                          <CardContent className="space-y-2 pb-3">
                             <div>
                               <p className="text-xs font-medium mb-1">Input:</p>
-                              <p className="text-sm bg-muted p-2 rounded font-mono">
+                              <p className="text-xs bg-muted p-2 rounded font-mono">
                                 {result.input}
                               </p>
                             </div>
                             <div>
                               <p className="text-xs font-medium mb-1">Output:</p>
-                              <pre className="text-xs bg-muted p-3 rounded overflow-auto max-h-[300px] font-mono">
+                              <pre className="text-xs bg-muted p-2 rounded overflow-auto max-h-[200px] font-mono">
                                 {JSON.stringify(result.output, null, 2)}
                               </pre>
                             </div>
