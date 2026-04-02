@@ -169,7 +169,7 @@ export default function PromptEditPage() {
     try {
       // Build request data based on input type
       let requestData: any;
-      let inputSummary: string;
+      let inputSummary: string = '';
 
       if (testConfig.inputType === 'partial-entry') {
         requestData = { partialEntry: testInput };
