@@ -10,7 +10,6 @@ export const settingsKeys = {
   all: ['settings'] as const,
   lists: () => [...settingsKeys.all, 'list'] as const,
   detail: (key: string) => [...settingsKeys.all, 'detail', key] as const,
-  promptSchemas: () => [...settingsKeys.all, 'prompt-schemas'] as const,
 };
 
 // Get all settings
@@ -47,14 +46,6 @@ export function useUpdateSetting() {
     onError: (error: Error) => {
       toast.error(error.message || 'Failed to update setting');
     },
-  });
-}
-
-// Get prompt output schemas
-export function usePromptSchemas() {
-  return useQuery({
-    queryKey: settingsKeys.promptSchemas(),
-    queryFn: () => settingsService.getPromptSchemas(),
   });
 }
 

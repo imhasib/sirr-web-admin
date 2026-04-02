@@ -16,6 +16,10 @@ export interface UpdateSettingRequest {
   description?: string;
 }
 
+export interface PromptSetting extends Setting {
+  outputSchema?: string;
+}
+
 // Friendly display names for setting keys
 export const SETTING_LABELS: Record<string, string> = {
   SYSTEM_PROMPT_MAIN_REFLECTION: 'Soul Mirror Reflection Prompt',

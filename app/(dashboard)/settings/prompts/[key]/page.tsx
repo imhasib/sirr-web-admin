@@ -9,9 +9,9 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useSetting, useUpdateSetting, usePromptSchemas, useTestPrompt } from '@/hooks/use-settings';
+import { useSetting, useUpdateSetting, useTestPrompt } from '@/hooks/use-settings';
 import { getPromptTestConfig, hasTestEndpoint } from '@/config/prompt-mappings';
-import { SETTING_LABELS } from '@/types/setting';
+import { SETTING_LABELS, PromptSetting } from '@/types/setting';
 import { ROUTES } from '@/lib/constants';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -31,9 +31,8 @@ export default function PromptEditPage() {
   const router = useRouter();
   const key = params.key as string;
 
-  // Fetch setting and schemas
+  // Fetch setting
   const { data: setting, isLoading, error } = useSetting(key);
-  const { data: schemasData } = usePromptSchemas();
   const updateMutation = useUpdateSetting();
   const testMutation = useTestPrompt();
 
@@ -45,7 +44,8 @@ export default function PromptEditPage() {
 
   // Get configuration
   const promptLabel = SETTING_LABELS[key] || key;
-  const outputSchema = schemasData?.schemas?.[key] || '';
+  const promptSetting = setting as PromptSetting | undefined;
+  const outputSchema = promptSetting?.outputSchema || '';
   const testConfig = getPromptTestConfig(key);
   const showTestSection = hasTestEndpoint(key);
 
