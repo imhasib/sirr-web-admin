@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { MessageSquareText, ChevronRight, BookOpen, Users, ClipboardList, BookText } from 'lucide-react';
+import { MessageSquareText, ChevronRight, BookOpen, Users, ClipboardList, BookText, BarChart3 } from 'lucide-react';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { useAuthStore } from '@/stores/auth-store';
@@ -19,8 +19,24 @@ export default function DashboardPage() {
 
       {isAdmin && (
         <>
-          {/* AI Settings Section */}
+          {/* Analytics & Metrics Section */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <Card
+              className="hover:shadow-md transition-shadow cursor-pointer group"
+              onClick={() => router.push(ROUTES.ADMIN_METRICS)}
+            >
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="p-2 rounded-lg bg-muted text-muted-foreground">
+                    <BarChart3 className="h-5 w-5" />
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                </div>
+                <CardTitle>Soul Mirror Performance</CardTitle>
+                <CardDescription>Monitor generation latency and error rates</CardDescription>
+              </CardHeader>
+            </Card>
+
             <Card
               className="hover:shadow-md transition-shadow cursor-pointer group"
               onClick={() => router.push(ROUTES.PROMPT_SETTINGS)}

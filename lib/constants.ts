@@ -35,6 +35,9 @@ export const ROUTES = {
   // Admin - Allah Names
   ADMIN_ALLAH_NAMES: '/admin/allah-names',
   ADMIN_ALLAH_NAMES_NEW: '/admin/allah-names/new',
+
+  // Admin - Metrics (Soul Mirror Performance)
+  ADMIN_METRICS: '/admin/metrics',
 } as const;
 
 /**
