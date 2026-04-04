@@ -24,6 +24,7 @@ export type AnyTestPromptRequest = TestPromptRequest | TestMainReflectionRequest
 export interface TestPromptResponse {
   output: any;
   timestamp: string;
+  generationDurationMs?: number;
 }
 
 export const settingsService = {

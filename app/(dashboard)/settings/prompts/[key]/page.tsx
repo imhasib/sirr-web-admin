@@ -22,6 +22,7 @@ interface TestResult {
   timestamp: string;
   input: string;
   output: any;
+  generationDurationMs?: number;
 }
 
 // LocalStorage key for drafts
@@ -199,6 +200,7 @@ export default function PromptEditPage() {
         timestamp: result.timestamp || new Date().toISOString(),
         input: inputSummary,
         output: outputData,
+        generationDurationMs: result.generationDurationMs,
       };
 
       // Add to test results (keep last 5)
@@ -510,6 +512,13 @@ export default function PromptEditPage() {
                               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                                 <Clock className="h-3 w-3" />
                                 {new Date(result.timestamp).toLocaleString()}
+                                {result.generationDurationMs !== undefined && (
+                                  <span className="text-muted-foreground">
+                                    • {result.generationDurationMs >= 1000
+                                      ? `${(result.generationDurationMs / 1000).toFixed(2)}s`
+                                      : `${result.generationDurationMs}ms`}
+                                  </span>
+                                )}
                                 {index === 0 && (
                                   <span className="text-primary font-medium">(Latest)</span>
                                 )}
@@ -530,6 +539,16 @@ export default function PromptEditPage() {
                             </div>
                           </CardHeader>
                           <CardContent className="space-y-2 pb-3">
+                            {result.generationDurationMs !== undefined && (
+                              <div className="flex items-center gap-2 text-xs">
+                                <span className="font-medium text-muted-foreground">Generation Duration:</span>
+                                <span className="font-mono text-primary">
+                                  {result.generationDurationMs >= 1000
+                                    ? `${(result.generationDurationMs / 1000).toFixed(2)}s`
+                                    : `${result.generationDurationMs}ms`}
+                                </span>
+                              </div>
+                            )}
                             <div>
                               <p className="text-xs font-medium mb-1">Input:</p>
                               <p className="text-xs bg-muted p-2 rounded font-mono">
