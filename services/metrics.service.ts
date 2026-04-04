@@ -1,6 +1,5 @@
 import apiClient from '@/lib/api-client';
 import {
-  ApiResponse,
   SoulMirrorLatencyResponse,
   SoulMirrorLatencyParams,
   SoulMirrorErrorsResponse,
@@ -13,8 +12,8 @@ export const metricsService = {
   // AI Reflection - Performance (includes latency metrics)
   async getSoulMirrorLatency(
     params?: SoulMirrorLatencyParams
-  ): Promise<ApiResponse<SoulMirrorLatencyResponse>> {
-    const response = await apiClient.get<ApiResponse<SoulMirrorLatencyResponse>>(
+  ): Promise<SoulMirrorLatencyResponse> {
+    const response = await apiClient.get<SoulMirrorLatencyResponse>(
       `${METRICS_BASE_URL}/ai-reflection/performance`,
       { params }
     );
@@ -24,8 +23,8 @@ export const metricsService = {
   // AI Reflection - Errors
   async getSoulMirrorErrors(
     params?: SoulMirrorErrorsParams
-  ): Promise<ApiResponse<SoulMirrorErrorsResponse>> {
-    const response = await apiClient.get<ApiResponse<SoulMirrorErrorsResponse>>(
+  ): Promise<SoulMirrorErrorsResponse> {
+    const response = await apiClient.get<SoulMirrorErrorsResponse>(
       `${METRICS_BASE_URL}/ai-reflection/errors`,
       { params }
     );

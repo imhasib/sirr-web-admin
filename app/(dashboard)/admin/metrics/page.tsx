@@ -22,7 +22,7 @@ export default function SoulMirrorMetricsPage() {
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
 
   const {
-    data: latencyData,
+    data: latencyMetrics,
     isLoading: isLoadingLatency,
     error: latencyError,
   } = useSoulMirrorLatency({
@@ -31,16 +31,13 @@ export default function SoulMirrorMetricsPage() {
   });
 
   const {
-    data: errorsData,
+    data: errorMetrics,
     isLoading: isLoadingErrors,
     error: errorsError,
   } = useSoulMirrorErrors({
     startDate: dateRange?.startDate,
     endDate: dateRange?.endDate,
   });
-
-  const latencyMetrics = latencyData?.data;
-  const errorMetrics = errorsData?.data;
 
   if (latencyError || errorsError) {
     return (
