@@ -38,6 +38,9 @@ export const ROUTES = {
 
   // Admin - Metrics (Soul Mirror Performance)
   ADMIN_METRICS: '/admin/metrics',
+
+  // Admin - Feedback
+  ADMIN_FEEDBACK: '/admin/feedback',
 } as const;
 
 /**
@@ -60,6 +63,9 @@ export const DYNAMIC_ROUTES = {
   // Allah Names routes
   adminAllahNameDetail: (id: string) => `/admin/allah-names/${id}`,
   adminAllahNameEdit: (id: string) => `/admin/allah-names/${id}/edit`,
+
+  // Feedback routes
+  adminFeedbackDetail: (id: string) => `/admin/feedback/${id}`,
 } as const;
 
 export const PUBLIC_ROUTES = [
