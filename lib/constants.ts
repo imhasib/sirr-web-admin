@@ -1,5 +1,5 @@
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
-export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'SIRR Admin';
+export const API_URL = process.env.SIRR_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+export const APP_NAME = process.env.SIRR_PUBLIC_APP_NAME || 'SIRR Admin';
 
 export const AUTH_TOKEN_KEY = 'sirr_access_token';
 export const REFRESH_TOKEN_KEY = 'sirr_refresh_token';

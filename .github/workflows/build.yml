@@ -41,8 +41,8 @@ jobs:
             ${{ env.DOCKER_IMAGE }}:latest
             ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
           build-args: |
-            NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }}
-            NEXT_PUBLIC_APP_NAME=${{ vars.NEXT_PUBLIC_APP_NAME }}
-            NEXT_PUBLIC_APP_URL=${{ vars.NEXT_PUBLIC_APP_URL }}
+            SIRR_PUBLIC_API_URL=${{ vars.SIRR_PUBLIC_API_URL }}
+            SIRR_PUBLIC_APP_NAME=${{ vars.SIRR_PUBLIC_APP_NAME }}
+            SIRR_PUBLIC_APP_URL=${{ vars.SIRR_PUBLIC_APP_URL }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

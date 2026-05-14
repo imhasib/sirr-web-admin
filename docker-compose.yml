@@ -6,12 +6,12 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000/api/v1}
+        - SIRR_PUBLIC_API_URL=${SIRR_PUBLIC_API_URL:-http://localhost:8000/api/v1}
     ports:
       - "${SIRR_WEB_ADMIN_PORT:-3030}:3000"
     environment:
       - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000/api/v1}
+      - SIRR_PUBLIC_API_URL=${SIRR_PUBLIC_API_URL:-http://localhost:8000/api/v1}
     restart: unless-stopped
     networks:
       - sirr-network
@@ -31,7 +31,7 @@ services:
       - "${SIRR_WEB_ADMIN_PORT:-3030}:3000"
     environment:
       - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000/api/v1}
+      - SIRR_PUBLIC_API_URL=${SIRR_PUBLIC_API_URL:-http://localhost:8000/api/v1}
     volumes:
       - .:/app
       - /app/node_modules
