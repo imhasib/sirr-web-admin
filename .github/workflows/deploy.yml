@@ -24,4 +24,4 @@ jobs:
           key: ${{ secrets.DO_SSH_KEY }}
           script: |
             docker pull imhasib/sirr-web-admin:latest
-            docker compose -f /root/speaking-club-deployment/docker-compose.yml up -d --no-build
+            docker compose -f /root/speaking-club-deployment/docker-compose.yml up -d --no-build --no-deps sirr-web-admin
